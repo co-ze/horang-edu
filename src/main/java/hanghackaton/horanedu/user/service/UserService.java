@@ -17,7 +17,7 @@ public class UserService {
     @Transactional
     public ResponseDto<String> createUser(UserRequestDto userRequestDto) {
         User user = new User(userRequestDto);
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
         return ResponseDto.setSuccess("아이디 생성");
     }
 

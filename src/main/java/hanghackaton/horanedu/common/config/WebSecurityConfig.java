@@ -24,7 +24,7 @@ public class WebSecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         // resources 접근 허용 설정
         return web -> web.ignoring()
-                .requestMatchers(PathRequest.toH2Console())  // H2 > MySQL 전환시 삭제
+//                .requestMatchers(PathRequest.toH2Console())  // H2 > MySQL 전환시 삭제
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 

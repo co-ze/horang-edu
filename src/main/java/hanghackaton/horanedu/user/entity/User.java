@@ -17,7 +17,7 @@ public class User {
     @Column(nullable = false)
     private String name;
 
-    @Column
+    @Column(nullable = false)
     private String school;
 
     @Column(nullable = false)
@@ -30,7 +30,7 @@ public class User {
     private int level;
 
     @Builder
-    public User(Long id, String name, String school, String stage, int exp, int level) {
+    public User(Long id, String name, String stage, int exp, int level, String school) {
         this.id = id;
         this.name = name;
         this.school = school;
