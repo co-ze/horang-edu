@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class UserRequestDto {
+public class StudentRequestDto {
     private String name;
     private String school;
     private String stage;
@@ -14,7 +14,7 @@ public class UserRequestDto {
     private int level;
 
     @Builder
-    public UserRequestDto(String name, String school, String stage, int exp, int level) {
+    public StudentRequestDto(String name, String school, String stage, int exp, int level) {
         this.name = name;
         this.school = school;
         this.stage = stage;

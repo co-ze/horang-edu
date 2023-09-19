@@ -1,6 +1,7 @@
 package hanghackaton.horanedu.user.entity;
 
-import hanghackaton.horanedu.user.dto.UserRequestDto;
+import hanghackaton.horanedu.school.entity.School;
+import hanghackaton.horanedu.user.dto.StudentRequestDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,8 +9,8 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@Entity(name = "users")
-public class User {
+@Entity
+public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,8 +18,9 @@ public class User {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String school;
+    @ManyToOne
+    @JoinColumn(name = "school_id")
+    private School school;
 
     @Column(nullable = false)
     private String stage;
@@ -30,21 +32,20 @@ public class User {
     private int level;
 
     @Builder
-    public User(Long id, String name, String stage, int exp, int level, String school) {
+    public Student(Long id, String name, String stage, int exp, int level) {
         this.id = id;
         this.name = name;
-        this.school = school;
         this.stage = stage;
         this.exp = exp;
         this.level = level;
     }
 
-    public User(UserRequestDto userRequestDto) {
-        this.name = userRequestDto.getName();
-        this.school = userRequestDto.getSchool();
-        this.stage = userRequestDto.getStage();
-        this.exp = userRequestDto.getExp();
-        this.level = userRequestDto.getLevel();
+    public Student(StudentRequestDto studentRequestDto, School school) {
+        this.name = studentRequestDto.getName();
+        this.stage = studentRequestDto.getStage();
+        this.school = school;
+        this.exp = studentRequestDto.getExp();
+        this.level = studentRequestDto.getLevel();
     }
 
     public void examReward(int exp, String stage, int level) {
