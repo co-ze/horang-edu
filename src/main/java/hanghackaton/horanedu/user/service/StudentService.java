@@ -11,6 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class StudentService {
@@ -23,6 +27,8 @@ public class StudentService {
         School school = schoolRepository.findSchoolByName(studentRequestDto.getSchool());
         Student student = new Student(studentRequestDto, school);
         studentRepository.saveAndFlush(student);
+        List<Student> students = studentRepository.findAll();
+        updateRank(students);
         return ResponseDto.setSuccess("아이디 생성");
     }
 
@@ -31,5 +37,15 @@ public class StudentService {
         Student student = studentRepository.findStudentById(id);
         StudentResponseDto studentResponseDto = new StudentResponseDto(student);
         return ResponseDto.setSuccess("학생 정보", studentResponseDto);
+    }
+
+    @Transactional
+    public void updateRank(List<Student> students) {
+        students.sort(Comparator.comparing(Student::getExp).reversed());
+        for (int i = 0; i < students.size(); i++) {
+            Student student = students.get(i);
+            student.updateRank(i + 1);
+            studentRepository.save(student);
+        }
     }
 }

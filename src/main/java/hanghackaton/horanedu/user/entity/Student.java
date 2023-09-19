@@ -31,6 +31,9 @@ public class Student {
     @Column(nullable = false)
     private int level;
 
+    @Column(nullable = false)
+    private int ranking;
+
     @Builder
     public Student(Long id, String name, String stage, int exp, int level) {
         this.id = id;
@@ -46,11 +49,16 @@ public class Student {
         this.school = school;
         this.exp = studentRequestDto.getExp();
         this.level = studentRequestDto.getLevel();
+        this.ranking = 0;
     }
 
     public void examReward(int exp, String stage, int level) {
         this.exp += exp;
         this.stage = stage;
         this.level = level;
+    }
+
+    public void updateRank(int rank) {
+        this.ranking = rank;
     }
 }
