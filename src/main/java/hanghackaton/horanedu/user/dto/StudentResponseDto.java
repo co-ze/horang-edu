@@ -9,7 +9,7 @@ public class StudentResponseDto {
     private String school;
     private int chapter;
     private int stage;
-    private double progress;
+    private int progress;
     private int exp;
     private int level;
 
@@ -18,7 +18,7 @@ public class StudentResponseDto {
         this.school = student.getSchool().getName();
         this.chapter = student.getChapter();
         this.stage = student.getStage();
-        this.progress = ((double) (student.getStage()-1) / (double) 5 * 100.0);
+        this.progress = (int) ((double) (student.getStage()-1) / (double) 5 * 100);
         this.exp = student.getExp();
         this.level = student.getLevel();
     }

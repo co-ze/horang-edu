@@ -3,7 +3,6 @@ package hanghackaton.horanedu.user.entity;
 import hanghackaton.horanedu.school.entity.School;
 import hanghackaton.horanedu.user.dto.StudentRequestDto;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -55,6 +54,11 @@ public class Student {
         this.exp = exp;
         this.chapter = chapter;
         this.stage = stage;
+        this.level = level;
+    }
+
+    public void attendanceReward(int exp, int level) {
+        this.exp = exp;
         this.level = level;
     }
 
