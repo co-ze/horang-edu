@@ -2,6 +2,7 @@ package hanghackaton.horanedu.user.repository;
 
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import hanghackaton.horanedu.school.entity.School;
 import hanghackaton.horanedu.user.dto.StudentRankDto;
 import hanghackaton.horanedu.user.entity.QStudent;
 import hanghackaton.horanedu.user.entity.Student;
@@ -12,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 
-import java.awt.*;
 import java.util.List;
 
 public class StudentInquiryImpl extends QuerydslRepositorySupport implements StudentInquiry{
@@ -44,5 +44,41 @@ public class StudentInquiryImpl extends QuerydslRepositorySupport implements Stu
                 .map(StudentRankDto::new)
                 .toList();
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    @Override
+    public Page<StudentRankDto> studentRankInSchool(Pageable pageable, School school) {
+        QStudent student = QStudent.student;
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+
+        List<Student> result = queryFactory
+                .select(student)
+                .from(student)
+                .where(student.school.eq(school))
+                .orderBy(student.exp.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(student.count())
+                .from(student)
+                .where(student.school.eq(school));
+
+        List<StudentRankDto> content = result.stream()
+                .map(StudentRankDto::new)
+                .toList();
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    @Override
+    public List<Student> findAllBySchool(School school) {
+        QStudent student = QStudent.student;
+        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+
+        return queryFactory
+                .selectFrom(student)
+                .where(student.school.eq(school))
+                .fetch();
     }
 }

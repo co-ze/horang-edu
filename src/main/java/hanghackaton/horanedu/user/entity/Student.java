@@ -23,7 +23,10 @@ public class Student {
     private School school;
 
     @Column(nullable = false)
-    private String stage;
+    private int chapter;
+
+    @Column(nullable = false)
+    private int stage;
 
     @Column(nullable = false)
     private int exp;
@@ -34,31 +37,32 @@ public class Student {
     @Column(nullable = false)
     private int ranking;
 
-    @Builder
-    public Student(Long id, String name, String stage, int exp, int level) {
-        this.id = id;
-        this.name = name;
-        this.stage = stage;
-        this.exp = exp;
-        this.level = level;
-    }
+    @Column(nullable = false)
+    private int schoolRank;
 
     public Student(StudentRequestDto studentRequestDto, School school) {
         this.name = studentRequestDto.getName();
+        this.chapter = studentRequestDto.getChapter();
         this.stage = studentRequestDto.getStage();
         this.school = school;
         this.exp = studentRequestDto.getExp();
         this.level = studentRequestDto.getLevel();
         this.ranking = 0;
+        this.schoolRank = 0;
     }
 
-    public void examReward(int exp, String stage, int level) {
-        this.exp += exp;
+    public void examReward(int exp, int chapter, int stage, int level) {
+        this.exp = exp;
+        this.chapter = chapter;
         this.stage = stage;
         this.level = level;
     }
 
     public void updateRank(int rank) {
         this.ranking = rank;
+    }
+
+    public void updateSchoolRank(int rank) {
+        this.schoolRank = rank;
     }
 }

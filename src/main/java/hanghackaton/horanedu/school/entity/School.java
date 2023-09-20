@@ -26,8 +26,20 @@ public class School {
     @Column(nullable = false)
     private int score;
 
+    @Column(nullable = false)
+    private int ranking;
+
     public School(SchoolRequestDto schoolRequestDto) {
         this.name = schoolRequestDto.getName();
-        this.score = schoolRequestDto.getScore();
+        this.score = 0;
+        this.ranking = 0;
+    }
+
+    public void updateRank(int rank) {
+        this.ranking = rank;
+    }
+
+    public void updateScore(int score) {
+        this.score += score;
     }
 }

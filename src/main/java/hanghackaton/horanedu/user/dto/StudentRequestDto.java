@@ -9,16 +9,9 @@ import lombok.NoArgsConstructor;
 public class StudentRequestDto {
     private String name;
     private String school;
-    private String stage;
+    private int chapter;
+    private int stage;
     private int exp;
     private int level;
 
-    @Builder
-    public StudentRequestDto(String name, String school, String stage, int exp, int level) {
-        this.name = name;
-        this.school = school;
-        this.stage = stage;
-        this.exp = exp;
-        this.level = level;
-    }
 }
