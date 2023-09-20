@@ -65,4 +65,11 @@ public class Student {
     public void updateSchoolRank(int rank) {
         this.schoolRank = rank;
     }
+
+    public void resetButton() {
+        this.chapter = 1;
+        this.stage = 1;
+        this.exp = 0;
+        this.level = 1;
+    }
 }

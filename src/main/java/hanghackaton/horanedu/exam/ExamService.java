@@ -21,9 +21,7 @@ public class ExamService {
 
     @Transactional
     public ResponseDto<String> examSolve() {
-        Student student = studentRepository.findById(1L).orElseThrow(
-                () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
-        );
+        Student student = studentRepository.findStudentByName("cozy");
         School school = schoolRepository.findSchoolById(student.getSchool().getId());
         int level = student.getLevel();
         int exp = student.getExp() + 20;
@@ -52,6 +50,27 @@ public class ExamService {
         updateSchoolTotalRank(schools);
 
         return ResponseDto.setSuccess("exp + 20");
+    }
+
+    @Transactional
+    public ResponseDto<String> examReset() {
+        Student student = studentRepository.findStudentByName("cozy");
+        School school = schoolRepository.findSchoolById(student.getSchool().getId());
+        int exp = student.getExp();
+        student.resetButton();
+        studentRepository.saveAndFlush(student);
+
+        school.resetScore(exp);
+        schoolRepository.saveAndFlush(school);
+
+        List<Student> students = studentRepository.findAll();
+        updateRank(students);
+        List<Student> schoolStudents = studentRepository.findAllBySchool(school);
+        updateSchoolRank(schoolStudents);
+        List<School> schools = schoolRepository.findAll();
+        updateSchoolTotalRank(schools);
+
+        return ResponseDto.setSuccess("reset cozy");
     }
 
     @Transactional

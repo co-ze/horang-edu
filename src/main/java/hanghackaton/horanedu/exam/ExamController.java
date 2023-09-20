@@ -16,4 +16,9 @@ public class ExamController {
         return examService.examSolve();
     }
 
+    @PostMapping("/api/exam/reset")
+    public ResponseDto<String> examReset() {
+        return examService.examReset();
+    }
+
 }

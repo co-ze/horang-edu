@@ -42,4 +42,8 @@ public class School {
     public void updateScore(int score) {
         this.score += score;
     }
+
+    public void resetScore(int score) {
+        this.score -= score;
+    }
 }
