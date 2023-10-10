@@ -1,7 +1,7 @@
 package hanghackaton.horanedu.domain.school.entity;
 
 import hanghackaton.horanedu.domain.school.dto.SchoolRequestDto;
-import hanghackaton.horanedu.domain.user.entity.Student;
+import hanghackaton.horanedu.domain.user.entity.UserDetail;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +21,7 @@ public class School {
     private String name;
 
     @OneToMany(mappedBy = "school", fetch = FetchType.LAZY)
-    private List<Student> studentList = new ArrayList<>();
+    private List<UserDetail> userList = new ArrayList<>();
 
     @Column(nullable = false)
     private int score;

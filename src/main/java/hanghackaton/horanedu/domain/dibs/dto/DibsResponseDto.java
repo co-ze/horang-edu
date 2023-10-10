@@ -5,9 +5,11 @@ import lombok.Getter;
 
 @Getter
 public class DibsResponseDto {
+    private Long id;
     private String topic;
 
     public DibsResponseDto(Dibs dibs) {
+        this.id = dibs.getId();
         this.topic = dibs.getTopic();
     }
 }

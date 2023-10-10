@@ -2,9 +2,9 @@ package hanghackaton.horanedu.domain.school.repository;
 
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import hanghackaton.horanedu.domain.school.entity.School;
 import hanghackaton.horanedu.domain.school.dto.SchoolRankDto;
-import hanghackaton.horanedu.school.entity.QSchool;
+import hanghackaton.horanedu.domain.school.entity.QSchool;
+import hanghackaton.horanedu.domain.school.entity.School;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.data.domain.Page;
