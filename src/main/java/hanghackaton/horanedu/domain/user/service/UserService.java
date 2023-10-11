@@ -11,6 +11,7 @@ import hanghackaton.horanedu.domain.user.dto.authDto.LoginDto;
 import hanghackaton.horanedu.domain.user.dto.authDto.SignupDto;
 import hanghackaton.horanedu.domain.user.dto.requestDto.UserUpdateRequestDto;
 import hanghackaton.horanedu.domain.user.dto.responseDto.PatchUserResponseDto;
+import hanghackaton.horanedu.domain.user.dto.responseDto.UserResponseDto;
 import hanghackaton.horanedu.domain.user.entity.User;
 import hanghackaton.horanedu.domain.user.entity.UserDetail;
 import hanghackaton.horanedu.domain.user.entity.UserProgress;
@@ -68,14 +69,23 @@ public class UserService {
         //유저 생성
         User user = new User(email, name, password, userRole);
         userRepository.saveAndFlush(user);
-        //유저 상세 생성
-        UserDetail userDetail = new UserDetail(user);
-        userDetailRepository.saveAndFlush(userDetail);
-        user.setUserDetail(userDetail);
-        //유저 진행도 생성
-        UserProgress userProgress = new UserProgress(user);
-        userProgressRepository.saveAndFlush(userProgress);
-        user.setUserProgress(userProgress);
+
+        //유저 계정
+        if (Objects.equals(userRole, UserRole.USER)) {
+            //유저 상세 생성
+            UserDetail userDetail = new UserDetail(user);
+            userDetailRepository.saveAndFlush(userDetail);
+            user.setUserDetail(userDetail);
+            //유저 진행도 생성
+            UserProgress userProgress = new UserProgress(user);
+            userProgressRepository.saveAndFlush(userProgress);
+            user.setUserProgress(userProgress);
+        } else { //관리자 계정
+            //유저 상세 생성
+            UserDetail userDetail = new UserDetail(user);
+            userDetailRepository.saveAndFlush(userDetail);
+            user.setUserDetail(userDetail);
+        }
 
         return ResponseDto.setSuccess(HttpStatus.OK,"회원 가입 성공!");
     }
@@ -128,8 +138,10 @@ public class UserService {
 
         user.updateName(userUpdateRequestDto.getName());
         userDetail.setSchool(school);
+        school.getUserDetailList().add(userDetail);
         userDetail.updateImage(imageUrl);
 
+        schoolRepository.saveAndFlush(school);
         userRepository.saveAndFlush(user);
         userDetailRepository.saveAndFlush(userDetail);
 
@@ -138,12 +150,29 @@ public class UserService {
 
     }
 
-//    @Transactional(readOnly = true)
-//    public ResponseDto<UserResponseDto> getStudent(Long id) {
-//        UserDetail user = userDetailRepository.findUserById(id);
-//        UserResponseDto studentResponseDto = new UserResponseDto(user);
-//        return ResponseDto.setSuccess("학생 정보", studentResponseDto);
-//    }
+    @Transactional(readOnly = true)
+    public ResponseDto<UserResponseDto> getUser(Long id, User user) {
+
+        if (!Objects.equals(id, user.getId())) {
+            throw new GlobalException(ExceptionEnum.UNAUTHORIZED);
+        }
+
+        Optional<User> checkUser = userRepository.findById(id);
+        if (checkUser.isEmpty()) {
+            throw new GlobalException(ExceptionEnum.NOT_FOUND_USER);
+        }
+
+        UserResponseDto userResponseDto = new UserResponseDto(
+                user.getEmail(),
+                user.getName(),
+                user.getUserDetail().getSchool(),
+                user.getRole(),
+                user.getUserDetail().getImage()
+        );
+
+        return ResponseDto.set(HttpStatus.OK, "회원 정보 조회", userResponseDto);
+
+    }
 
 //    @Transactional(readOnly = true)
 //    public ResponseDto<OneUserDto> getStudentRank(Long id) {

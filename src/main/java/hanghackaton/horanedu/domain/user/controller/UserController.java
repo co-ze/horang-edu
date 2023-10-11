@@ -1,12 +1,14 @@
 package hanghackaton.horanedu.domain.user.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import hanghackaton.horanedu.common.dto.ResponseDto;
 import hanghackaton.horanedu.common.security.UserDetailsImpl;
 import hanghackaton.horanedu.domain.user.dto.authDto.LoginDto;
 import hanghackaton.horanedu.domain.user.dto.authDto.SignupDto;
-import hanghackaton.horanedu.domain.user.dto.UserResponseDto;
+import hanghackaton.horanedu.domain.user.dto.responseDto.UserResponseDto;
 import hanghackaton.horanedu.domain.user.dto.requestDto.UserUpdateRequestDto;
 import hanghackaton.horanedu.domain.user.dto.responseDto.PatchUserResponseDto;
+import hanghackaton.horanedu.domain.user.service.KakaoService;
 import hanghackaton.horanedu.domain.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -24,6 +26,7 @@ import java.io.IOException;
 public class UserController {
 
     private final UserService userService;
+    private final KakaoService kakaoService;
 
     @PostMapping("/signup")
     public ResponseDto<String> signup(@Valid @RequestBody SignupDto signupDto) {
@@ -46,10 +49,16 @@ public class UserController {
         return userService.updateUser(id, image, userUpdateRequestDto, userDetails.getUser());
     }
 
-    //    @GetMapping("/{id}")
-//    public ResponseDto<UserResponseDto> getUser(@PathVariable Long id) {
-//        return userService.getStudent(id);
-//    }
+    @GetMapping("/{id}")
+    public ResponseDto<UserResponseDto> getUser(@PathVariable Long id,
+                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.getUser(id, userDetails.getUser());
+    }
+
+    @GetMapping("/kakao")
+    public ResponseDto<String> loginWithKakao(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        return kakaoService.loginWithKakao(code, response);
+    }
 
     //    @GetMapping("/rank/{id}")
 //    public ResponseDto<OneUserDto> getUserRank(@PathVariable Long id) {

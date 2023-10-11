@@ -1,7 +1,6 @@
 package hanghackaton.horanedu.domain.user.entity;
 
 import hanghackaton.horanedu.domain.school.entity.School;
-import hanghackaton.horanedu.domain.user.dto.UserRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

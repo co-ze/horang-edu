@@ -32,11 +32,21 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private UserProgress userProgress;
 
+    private Long kakaoId;
+
     public User(String email, String name, String password, UserRole role) {
         this.email = email;
         this.name = name;
         this.password = password;
         this.role = role;
+    }
+
+    public User(String email, String name, String password, UserRole role, Long kakaoId) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+        this.role = role;
+        this.kakaoId = kakaoId;
     }
 
     public void setUserDetail(UserDetail userDetail) {
@@ -49,6 +59,10 @@ public class User {
 
     public void updateName(String name) {
         this.name = name;
+    }
+
+    public void setKakaoId(Long id) {
+        this.kakaoId = id;
     }
 
 }
