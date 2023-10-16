@@ -9,6 +9,7 @@ import hanghackaton.horanedu.domain.school.entity.School;
 import hanghackaton.horanedu.domain.school.repository.SchoolRepository;
 import hanghackaton.horanedu.domain.user.dto.authDto.LoginDto;
 import hanghackaton.horanedu.domain.user.dto.authDto.SignupDto;
+import hanghackaton.horanedu.domain.user.dto.requestDto.UserDepartmentDto;
 import hanghackaton.horanedu.domain.user.dto.requestDto.UserUpdateRequestDto;
 import hanghackaton.horanedu.domain.user.dto.responseDto.PatchUserResponseDto;
 import hanghackaton.horanedu.domain.user.dto.responseDto.UserResponseDto;
@@ -22,6 +23,7 @@ import hanghackaton.horanedu.domain.user.userEnum.UserRole;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -174,31 +176,31 @@ public class UserService {
 
     }
 
-//    @Transactional(readOnly = true)
-//    public ResponseDto<OneUserDto> getStudentRank(Long id) {
-//        UserDetail user = userDetailRepository.findUserById(id);
-//        OneUserDto studentRankDto = new OneUserDto(user);
-//        return ResponseDto.setSuccess("내 순위 정보", studentRankDto);
-//    }
-//
-//    @Transactional
-//    public void updateRank(List<UserDetail> users) {
-//        users.sort(Comparator.comparing(UserDetail::getExp).reversed());
-//        for (int i = 0; i < users.size(); i++) {
-//            UserDetail user = users.get(i);
-//            user.updateRank(i + 1);
-//            userDetailRepository.save(user);
-//        }
-//    }
-//
-//    @Transactional
-//    public void updateSchoolRank(List<UserDetail> schoolUsers) {
-//        schoolUsers.sort(Comparator.comparing(UserDetail::getExp).reversed());
-//        for (int i = 0; i < schoolUsers.size(); i++) {
-//            UserDetail user = schoolUsers.get(i);
-//            user.updateSchoolRank(i + 1);
-//            userDetailRepository.save(user);
-//        }
-//    }
+    @Transactional
+    public ResponseDto<String> updateUserDepartment(Long id, UserDepartmentDto userDepartmentDto, User user) {
+
+        if (!Objects.equals(id, user.getId())) {
+            throw new GlobalException(ExceptionEnum.UNAUTHORIZED);
+        }
+        UserDetail userDetail = userDetailRepository.findUserDetailByUser(user);
+
+        String teacherEmail = userDepartmentDto.getEmail();
+        User teacher;
+        if (!Objects.equals(teacherEmail, "")) {
+            teacher = userRepository.findUserByEmail(teacherEmail);
+            if (teacher == null) {
+                throw new GlobalException(ExceptionEnum.NOT_FOUND_TEACHER);
+            }
+            userDetail.setTeacherName(teacher.getName());
+            userDetail.updateDepartment(teacher.getUserDetail().getGrade(), teacher.getUserDetail().getGroup());
+            userDetailRepository.save(userDetail);
+            return ResponseDto.setSuccess(HttpStatus.OK, "선생님 등록 완료!");
+        } else {
+            userDetail.updateDepartment(userDepartmentDto.getGrade(), userDepartmentDto.getGroup());
+            userDetailRepository.save(userDetail);
+            return ResponseDto.setSuccess(HttpStatus.OK, "학년 / 반 입력 성공!");
+        }
+
+    }
 
 }

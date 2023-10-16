@@ -5,6 +5,7 @@ import hanghackaton.horanedu.common.dto.ResponseDto;
 import hanghackaton.horanedu.common.security.UserDetailsImpl;
 import hanghackaton.horanedu.domain.user.dto.authDto.LoginDto;
 import hanghackaton.horanedu.domain.user.dto.authDto.SignupDto;
+import hanghackaton.horanedu.domain.user.dto.requestDto.UserDepartmentDto;
 import hanghackaton.horanedu.domain.user.dto.responseDto.UserResponseDto;
 import hanghackaton.horanedu.domain.user.dto.requestDto.UserUpdateRequestDto;
 import hanghackaton.horanedu.domain.user.dto.responseDto.PatchUserResponseDto;
@@ -58,6 +59,13 @@ public class UserController {
     @GetMapping("/kakao")
     public ResponseDto<String> loginWithKakao(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         return kakaoService.loginWithKakao(code, response);
+    }
+
+    @PatchMapping("/detail/{id}")
+    public ResponseDto<String> updateUserDepartment(@PathVariable Long id,
+                                                    @RequestBody UserDepartmentDto userDepartmentDto,
+                                                    @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.updateUserDepartment(id, userDepartmentDto, userDetails.getUser());
     }
 
     //    @GetMapping("/rank/{id}")
