@@ -23,7 +23,6 @@ import hanghackaton.horanedu.domain.user.userEnum.UserRole;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -192,7 +191,7 @@ public class UserService {
                 throw new GlobalException(ExceptionEnum.NOT_FOUND_TEACHER);
             }
             userDetail.setTeacherName(teacher.getName());
-            userDetail.updateDepartment(teacher.getUserDetail().getGrade(), teacher.getUserDetail().getGroup());
+            userDetail.updateDepartment(teacher.getUserDetail().getGrade(), teacher.getUserDetail().getClassNum());
             userDetailRepository.save(userDetail);
             return ResponseDto.setSuccess(HttpStatus.OK, "선생님 등록 완료!");
         } else {

@@ -31,13 +31,13 @@ public class UserDetail {
     private int grade;
 
     @Column
-    private int group;
+    private int classNum;
 
     public UserDetail(User user) {
         this.user = user;
         this.teacherName = "-";
         this.grade = 0;
-        this.group = 0;
+        this.classNum = 0;
     }
 
     public void setSchool(School school) {
@@ -52,8 +52,8 @@ public class UserDetail {
         this.teacherName = name;
     }
 
-    public void updateDepartment(int grade, int group) {
+    public void updateDepartment(int grade, int classNum) {
         this.grade = grade;
-        this.group = group;
+        this.classNum = classNum;
     }
 }
