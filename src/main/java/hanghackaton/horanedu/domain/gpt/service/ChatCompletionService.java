@@ -24,18 +24,14 @@ public class ChatCompletionService {
     private static final String url = "https://api.openai.com/v1/chat/completions";
 
     @Value("${api.key}")
-    private static String key;
-    private static final String AUTHORIZATION = "Bearer " + key;
+    private String AUTHORIZATION;
 
     private final ChatGptProperties chatGptProperties;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
     public ResponseDto<ChatResponse> sendRequestAndGetResponse(String prompt) {
-        Message message = Message.builder()
-                .role("user")
-                .content(prompt)
-                .build();
+        Message message = new Message("user", prompt);
 
         List<Message> messages = new ArrayList<>();
         messages.add(message);
@@ -45,6 +41,7 @@ public class ChatCompletionService {
                 .build();
 
         ChatResponse response = getResponse(buildHttpEntity(request), ChatResponse.class, url);
+
         try {
             return ResponseDto.set(HttpStatus.OK, "채팅 성공", response);
         } catch (Exception e) {
@@ -61,7 +58,6 @@ public class ChatCompletionService {
     }
 
     protected <T> T getResponse(HttpEntity<?> httpEntity, Class<T> responseType, String url) {
-        log.info("request url: {}, httpEntity: {}", url, httpEntity);
         ResponseEntity<T> responseEntity = restTemplate.postForEntity(url, httpEntity, responseType);
         if (responseEntity.getStatusCodeValue() != HttpStatus.OK.value()) {
             log.error("error response status: {}", responseEntity);
@@ -69,6 +65,7 @@ public class ChatCompletionService {
         } else {
             log.info("response: {}", responseEntity);
         }
+
         return responseEntity.getBody();
     }
 }

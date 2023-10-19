@@ -10,7 +10,7 @@ public class ChatResponse {
 
     private String id;
     private String object;
-    private LocalDate createdDate;
+    private LocalDate created;
     private String model;
     private List<Choice> choices;
     private Usage usage;
