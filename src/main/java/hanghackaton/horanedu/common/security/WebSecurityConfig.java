@@ -48,7 +48,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests().requestMatchers("/**").permitAll()
                 .anyRequest().authenticated();
         return http.build();
-    }
+}
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

@@ -32,7 +32,7 @@ public enum ExceptionEnum {
     NOT_FOUND_SCHOOL(HttpStatus.NOT_FOUND, "404", "학교가 존재하지 않습니다."),
     NOT_FOUND_COMMENT(HttpStatus.NOT_FOUND, "404_2", "댓글이 존재하지 않습니다."),
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "404", "회원이 존재하지 않습니다."),
-    NOT_FOUND_PORTFOLIO(HttpStatus.NOT_FOUND, "404", "포트폴리오가 존재하지 않습니다."),
+    NOT_FOUND_POST(HttpStatus.NOT_FOUND, "404", "글이 존재하지 않습니다."),
     NOT_FOUND_TEACHER(HttpStatus.NOT_FOUND,"404", "선생님이 존재하지 않습니다."),
 
     // 409 Conflict
