@@ -1,15 +1,15 @@
 package hanghackaton.horanedu.domain.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 
-import java.sql.Blob;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -36,13 +36,18 @@ public class Post {
     @Column(nullable = false)
     private String userName;
 
-    private String images;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<PostImage> images;
 
-    public Post(String title, String content, String userName, String images) {
+    public Post(String title, String content, String userName) {
         this.title = title;
         this.content = content;
         this.userName = userName;
-        this.images = images;
+    }
+
+    public void setImage(List<PostImage> postImage) {
+        this.images = postImage;
     }
 
 }

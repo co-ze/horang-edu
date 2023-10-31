@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 @Getter
@@ -17,7 +16,7 @@ public class PostResponseDto {
     private String userName;
     private LocalDateTime created;
     private Integer views;
-    private List<String> images;
+    private List<PostImageResponseDto> images;
 
     public PostResponseDto(Post post) {
         this.title = post.getTitle();
@@ -25,6 +24,6 @@ public class PostResponseDto {
         this.userName = post.getUserName();
         this.created = post.getCreated();
         this.views = post.getViews();
-        this.images = Arrays.stream(post.getImages().split(", ")).toList();
+        this.images = post.getImages().stream().map(PostImageResponseDto::new).toList();
     }
 }

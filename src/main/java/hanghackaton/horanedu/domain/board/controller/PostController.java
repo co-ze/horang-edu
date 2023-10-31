@@ -2,7 +2,7 @@ package hanghackaton.horanedu.domain.board.controller;
 
 import hanghackaton.horanedu.common.dto.ResponseDto;
 import hanghackaton.horanedu.common.security.UserDetailsImpl;
-import hanghackaton.horanedu.domain.board.dto.PostCreateDto;
+import hanghackaton.horanedu.domain.board.dto.PostRequestDto;
 import hanghackaton.horanedu.domain.board.dto.PostResponseDto;
 import hanghackaton.horanedu.domain.board.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +22,10 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseDto<String> createPost(@RequestPart PostCreateDto postCreateDto,
+    public ResponseDto<String> createPost(@RequestPart PostRequestDto postRequestDto,
                                           @RequestPart(name = "images", required = false) List<MultipartFile> images,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        return postService.createPost(postCreateDto, images, userDetails.getUser());
+        return postService.createPost(postRequestDto, images, userDetails.getUser());
     }
 
     @GetMapping("/{id}")
@@ -33,6 +33,13 @@ public class PostController {
         return postService.getPost(id);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseDto<String> updatePost(@PathVariable Long id,
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                          @RequestPart(name = "postRequestDto") PostRequestDto postRequestDto,
+                                          @RequestPart(name = "image", required = false) List<MultipartFile> images) {
+        return postService.updatePost(id, userDetails.getUser(), postRequestDto, images);
+    }
 
 
 }

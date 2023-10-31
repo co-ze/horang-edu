@@ -3,7 +3,7 @@ package hanghackaton.horanedu.domain.board.dto;
 import lombok.Getter;
 
 @Getter
-public class PostCreateDto {
+public class PostRequestDto {
 
     private String title;
 

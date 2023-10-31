@@ -1,4 +1,4 @@
-package hanghackaton.horanedu.domain.board.repository;
+package hanghackaton.horanedu.domain.board.repository.post;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import hanghackaton.horanedu.domain.board.entity.Post;

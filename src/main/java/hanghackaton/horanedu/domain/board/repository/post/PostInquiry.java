@@ -1,4 +1,4 @@
-package hanghackaton.horanedu.domain.board.repository;
+package hanghackaton.horanedu.domain.board.repository.post;
 
 public interface PostInquiry {
 
