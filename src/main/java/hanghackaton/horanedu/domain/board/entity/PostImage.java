@@ -22,6 +22,11 @@ public class PostImage {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "classPost_id")
+    private ClassPost classPost;
+
     public PostImage(String image) {
         this.image = image;
     }
@@ -30,4 +35,7 @@ public class PostImage {
         this.post = post;
     }
 
+    public void setClassPost(ClassPost classPost) {
+        this.classPost = classPost;
+    }
 }

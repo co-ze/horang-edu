@@ -80,7 +80,6 @@ public class UserService {
             //유저 진행도 생성
             UserProgress userProgress = new UserProgress(user);
             userProgressRepository.saveAndFlush(userProgress);
-            user.setUserProgress(userProgress);
         } else { //관리자 계정
             //유저 상세 생성
             UserDetail userDetail = new UserDetail(user);

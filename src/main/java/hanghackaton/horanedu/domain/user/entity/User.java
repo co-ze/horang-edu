@@ -1,9 +1,13 @@
 package hanghackaton.horanedu.domain.user.entity;
 
+import hanghackaton.horanedu.domain.board.entity.ClassPost;
+import hanghackaton.horanedu.domain.board.entity.Post;
 import hanghackaton.horanedu.domain.user.userEnum.UserRole;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -26,13 +30,16 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRole role;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private UserDetail userDetail;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private UserProgress userProgress;
-
     private Long kakaoId;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Post> posts;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<ClassPost> classPosts;
 
     public User(String email, String name, String password, UserRole role) {
         this.email = email;
@@ -53,10 +60,6 @@ public class User {
         this.userDetail = userDetail;
     }
 
-    public void setUserProgress(UserProgress userProgress) {
-        this.userProgress = userProgress;
-    }
-
     public void updateName(String name) {
         this.name = name;
     }
@@ -65,4 +68,11 @@ public class User {
         this.kakaoId = id;
     }
 
+    public void addPost(Post post) {
+        this.posts.add(post);
+    }
+
+    public void addClassPost(ClassPost classPost) {
+        this.classPosts.add(classPost);
+    }
 }

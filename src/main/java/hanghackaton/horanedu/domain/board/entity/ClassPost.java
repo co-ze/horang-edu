@@ -17,7 +17,8 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @DynamicInsert
-public class Post {
+public class ClassPost {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,8 +30,7 @@ public class Post {
     private String content;
 
     @Column(nullable = false)
-    @Enumerated(value = EnumType.STRING)
-    private PostCategoryEnum category;
+    private String gradeClass;
 
     @CreationTimestamp
     @Column(name = "create_date")
@@ -43,17 +43,17 @@ public class Post {
     private String userName;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "classPost", cascade = CascadeType.ALL)
     private List<PostImage> images;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Post(String title, String content, PostCategoryEnum category, String userName) {
+    public ClassPost(String title, String content, String group, String userName) {
         this.title = title;
         this.content = content;
-        this.category = category;
+        this.gradeClass = group;
         this.userName = userName;
     }
 
@@ -64,5 +64,4 @@ public class Post {
     public void setUser(User user) {
         this.user = user;
     }
-
 }

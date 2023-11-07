@@ -18,12 +18,12 @@ public class PostInquiryImpl extends QuerydslRepositorySupport implements PostIn
 
     @Override
     public void increaseViews(Long id) {
-        QPost post = QPost.post;
-        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
+            QPost post = QPost.post;
+            JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
-        queryFactory.update(post)
-                .set(post.views, post.views.add(1))
-                .where(post.id.eq(id))
-                .execute();
+            queryFactory.update(post)
+                    .set(post.views, post.views.add(1))
+                    .where(post.id.eq(id))
+                    .execute();
     }
 }

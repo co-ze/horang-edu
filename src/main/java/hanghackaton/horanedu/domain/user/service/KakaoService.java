@@ -158,7 +158,6 @@ public class KakaoService {
                 //유저 진행도 생성
                 UserProgress userProgress = new UserProgress(newKakaoUser);
                 userProgressRepository.saveAndFlush(userProgress);
-                newKakaoUser.setUserProgress(userProgress);
                 return newKakaoUser;
             }
         }
