@@ -2,6 +2,7 @@ package hanghackaton.horanedu.domain.board.controller;
 
 import hanghackaton.horanedu.common.dto.ResponseDto;
 import hanghackaton.horanedu.common.security.UserDetailsImpl;
+import hanghackaton.horanedu.domain.board.dto.PatchPostRequestDto;
 import hanghackaton.horanedu.domain.board.dto.PostRequestDto;
 import hanghackaton.horanedu.domain.board.dto.PostResponseDto;
 import hanghackaton.horanedu.domain.board.service.ClassPostService;
@@ -44,14 +45,15 @@ public class PostController {
     @PatchMapping("/{id}")
     public ResponseDto<String> updatePost(@PathVariable Long id,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails,
-                                          @RequestPart(name = "postRequestDto") PostRequestDto postRequestDto,
+                                          @RequestPart(name = "patchPostRequestDto") PatchPostRequestDto patchPostRequestDto,
                                           @RequestPart(name = "image", required = false) List<MultipartFile> images) {
-        return postService.updatePost(id, userDetails.getUser(), postRequestDto, images);
+        return postService.updatePost(id, userDetails.getUser(), patchPostRequestDto, images);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseDto<String> deletePost(@PathVariable Long id) {
-        return postService.deletePost(id);
+    public ResponseDto<String> deletePost(@PathVariable Long id,
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return postService.deletePost(id, userDetails.getUser());
     }
 
 }
