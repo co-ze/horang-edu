@@ -32,7 +32,7 @@ public class PostController {
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 
         if (StringUtils.pathEquals(postRequestDto.getCategory(), "")) {
-            return classPostService.createClassPost(postRequestDto,images, userDetails.getUser());
+            return classPostService.createClassPost(postRequestDto, images, userDetails.getUser());
         } else {
             return postService.createPost(postRequestDto, images, userDetails.getUser());
         }

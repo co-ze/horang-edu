@@ -74,7 +74,6 @@ public class PostService {
     }
 
 
-
     //게시물 조회
     @Transactional
     public ResponseDto<PostResponseDto> getPost(Long id) {
@@ -115,7 +114,7 @@ public class PostService {
         if (patchPostRequestDto.getTitle() != null) post.setTitle(patchPostRequestDto.getTitle());
         if (patchPostRequestDto.getContent() != null) post.setContent(patchPostRequestDto.getContent());
         //이미지 요청 데이터가 있는지 확인
-        if (!requestImages.isEmpty()){
+        if (!requestImages.isEmpty()) {
             //게시글 이미지 삭제 준비
             List<PostImage> postImages = post.getImages();
             //리스트에 포함된 이미지 모두 삭제
