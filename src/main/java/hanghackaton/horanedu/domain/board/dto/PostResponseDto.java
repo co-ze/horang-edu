@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class PostResponseDto {
 
+    private Long id;
     private String title;
     private String content;
     private String userName;
@@ -19,6 +20,7 @@ public class PostResponseDto {
     private List<PostImageResponseDto> images;
 
     public PostResponseDto(Post post) {
+        this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
         this.userName = post.getUserName();

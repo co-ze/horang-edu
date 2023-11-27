@@ -50,10 +50,10 @@ public class ClassPost {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public ClassPost(String title, String content, String group, String userName) {
+    public ClassPost(String title, String content, String gradeClass, String userName) {
         this.title = title;
         this.content = content;
-        this.gradeClass = group;
+        this.gradeClass = gradeClass;
         this.userName = userName;
     }
 
@@ -63,5 +63,13 @@ public class ClassPost {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }
