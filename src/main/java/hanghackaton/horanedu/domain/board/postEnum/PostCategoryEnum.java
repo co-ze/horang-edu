@@ -6,7 +6,6 @@ import lombok.Getter;
 public enum PostCategoryEnum {
     FREE(Category.FREE),
     QUESTION(Category.QUESTION),
-    CLASS(Category.CLASS),
     DIARY(Category.DIARY);
 
     public final String category;
@@ -19,7 +18,6 @@ public enum PostCategoryEnum {
         public static final String FREE = "FREE";
         public static final String QUESTION = "QUESTION";
         public static final String DIARY = "DIARY";
-        public static final String CLASS = "CLASS";
     }
 
 }

@@ -52,7 +52,7 @@ public class PostController {
     public ResponseDto<String> updatePost(@PathVariable Long id,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails,
                                           @RequestPart(name = "patchPostRequestDto") PatchPostRequestDto patchPostRequestDto,
-                                          @RequestPart(name = "image", required = false) List<MultipartFile> images) throws IOException {
+                                          @RequestPart(name = "images", required = false) List<MultipartFile> images) throws IOException {
         return postService.updatePost(id, userDetails.getUser(), patchPostRequestDto, images);
     }
 
@@ -60,7 +60,7 @@ public class PostController {
     public ResponseDto<String> updateClassPost(@PathVariable Long id,
                                                @AuthenticationPrincipal UserDetailsImpl userDetails,
                                                @RequestPart(name = "patchPostRequestDto") PatchPostRequestDto patchPostRequestDto,
-                                               @RequestPart(name = "image", required = false) List<MultipartFile> images) throws IOException {
+                                               @RequestPart(name = "images", required = false) List<MultipartFile> images) throws IOException {
         return classPostService.updateClassPost(id, userDetails.getUser(), patchPostRequestDto, images);
     }
 

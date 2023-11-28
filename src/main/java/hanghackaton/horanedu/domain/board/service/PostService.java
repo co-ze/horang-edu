@@ -106,7 +106,7 @@ public class PostService {
                 () -> new GlobalException(ExceptionEnum.NOT_FOUND_POST)
         );
         //유저가 작성한 게시글인지 확인
-        if (Objects.equals(userNow.getId(), post.getUser().getId())) {
+        if (!Objects.equals(userNow.getId(), post.getUser().getId())) {
             throw new GlobalException(ExceptionEnum.UNAUTHORIZED);
         }
 
@@ -144,7 +144,7 @@ public class PostService {
                 () -> new GlobalException(ExceptionEnum.NOT_FOUND_POST)
         );
         //유저가 작성한 게시글인지 확인
-        if (Objects.equals(userNow.getId(), post.getUser().getId())) {
+        if (!Objects.equals(userNow.getId(), post.getUser().getId())) {
             throw new GlobalException(ExceptionEnum.UNAUTHORIZED);
         }
 

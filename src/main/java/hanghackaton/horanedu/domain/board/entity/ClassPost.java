@@ -1,7 +1,6 @@
 package hanghackaton.horanedu.domain.board.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import hanghackaton.horanedu.domain.board.postEnum.PostCategoryEnum;
 import hanghackaton.horanedu.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -20,6 +20,8 @@ import hanghackaton.horanedu.domain.user.repository.UserRepository;
 import hanghackaton.horanedu.domain.user.repository.userDetail.UserDetailRepository;
 import hanghackaton.horanedu.domain.user.repository.userProgress.UserProgressRepository;
 import hanghackaton.horanedu.domain.user.userEnum.UserRole;
+import hanghackaton.horanedu.domain.youtube.entity.Video;
+import hanghackaton.horanedu.domain.youtube.repository.VideoRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,6 +46,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
     private final SchoolRepository schoolRepository;
+    private final VideoRepository videoRepository;
 
     private static final String ADMIN_CODE = "horang";
 
@@ -80,6 +83,9 @@ public class UserService {
             //유저 진행도 생성
             UserProgress userProgress = new UserProgress(user);
             userProgressRepository.saveAndFlush(userProgress);
+            //유저별 비디오 재생 시간 생성
+            Video video = new Video(user);
+            videoRepository.saveAndFlush(video);
         } else { //관리자 계정
             //유저 상세 생성
             UserDetail userDetail = new UserDetail(user);
