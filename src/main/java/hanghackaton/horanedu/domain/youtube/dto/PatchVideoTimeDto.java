@@ -7,6 +7,6 @@ public class PatchVideoTimeDto {
 
     private Long id;
 
-    private String playTime;
+    private Integer playTime;
 
 }

@@ -13,6 +13,8 @@ import hanghackaton.horanedu.domain.user.repository.UserRepository;
 import hanghackaton.horanedu.domain.user.repository.userDetail.UserDetailRepository;
 import hanghackaton.horanedu.domain.user.repository.userProgress.UserProgressRepository;
 import hanghackaton.horanedu.domain.user.userEnum.UserRole;
+import hanghackaton.horanedu.domain.youtube.entity.Video;
+import hanghackaton.horanedu.domain.youtube.repository.VideoRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +37,7 @@ public class KakaoService {
     private final UserRepository userRepository;
     private final UserDetailRepository userDetailRepository;
     private final UserProgressRepository userProgressRepository;
+    private final VideoRepository videoRepository;
     private final JwtUtil jwtUtil;
 
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
@@ -47,6 +50,8 @@ public class KakaoService {
     private String kakaoRedirectUri;
 
     public ResponseDto<String> loginWithKakao(String code, HttpServletResponse response) throws JsonProcessingException {
+        log.info("-----KAKAO LOGIN START-----");
+
         //프론트에서 로그인 요청 시에 받는 '인가 코드' 이용해 토큰 요청
         String accessToken = requestToken(code);
 
@@ -59,6 +64,8 @@ public class KakaoService {
         //로그인 된 유저 정보로 토큰 생성 후 반환
         String token = jwtUtil.createToken(user.getId(), user.getEmail(), user.getRole());
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+
+        log.info("-----KAKAO LOGIN END-----");
 
         return ResponseDto.setSuccess(HttpStatus.OK, "카카오 로그인 성공!", user.getName());
     }
@@ -158,6 +165,9 @@ public class KakaoService {
                 //유저 진행도 생성
                 UserProgress userProgress = new UserProgress(newKakaoUser);
                 userProgressRepository.saveAndFlush(userProgress);
+                //유저별 비디오 재생 시간 생성
+                Video video = new Video(newKakaoUser);
+                videoRepository.saveAndFlush(video);
                 return newKakaoUser;
             }
         }

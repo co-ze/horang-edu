@@ -24,6 +24,7 @@ import hanghackaton.horanedu.domain.youtube.entity.Video;
 import hanghackaton.horanedu.domain.youtube.repository.VideoRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -53,6 +55,8 @@ public class UserService {
     //회원가입
     @Transactional
     public ResponseDto<String> signup(SignupDto signupDto) {
+        log.info("-----회원가입 시작-----");
+
         String email = signupDto.getEmail();
         String name = signupDto.getName();
         String password = passwordEncoder.encode(signupDto.getPassword());
@@ -93,12 +97,17 @@ public class UserService {
             user.setUserDetail(userDetail);
         }
 
+        log.info("-----회원가입 종료-----");
+
         return ResponseDto.setSuccess(HttpStatus.OK,"회원 가입 성공!");
     }
 
     //로그인
     @Transactional
     public ResponseDto<String> login(LoginDto loginDto, HttpServletResponse response) {
+
+        log.info("-----LOGIN START-----");
+
         String email = loginDto.getEmail();
         String password = loginDto.getPassword();
 
@@ -113,6 +122,8 @@ public class UserService {
         String token = jwtUtil.createToken(user.getId(), user.getEmail(), user.getRole());
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
 
+        log.info("-----LOGIN END-----");
+
         return ResponseDto.setSuccess(HttpStatus.OK, "로그인 성공~!");
     }
 
@@ -121,6 +132,8 @@ public class UserService {
                                                         MultipartFile image,
                                                         UserUpdateRequestDto userUpdateRequestDto,
                                                         User user) throws IOException {
+
+        log.info("-----USER UPDATE START-----");
 
         //사전 작업
         if (!Objects.equals(id, user.getId())) {
@@ -152,12 +165,17 @@ public class UserService {
         userDetailRepository.saveAndFlush(userDetail);
 
         PatchUserResponseDto patchUserResponseDto = new PatchUserResponseDto(user, userDetail);
+
+        log.info("-----USER UPDATE END-----");
+
         return ResponseDto.setSuccess(HttpStatus.OK,"회원 정보 수정!", patchUserResponseDto);
 
     }
 
     @Transactional(readOnly = true)
     public ResponseDto<UserResponseDto> getUser(Long id, User user) {
+
+        log.info("-----READ USER START-----");
 
         if (!Objects.equals(id, user.getId())) {
             throw new GlobalException(ExceptionEnum.UNAUTHORIZED);
@@ -176,12 +194,16 @@ public class UserService {
                 user.getUserDetail().getImage()
         );
 
+        log.info("-----READ USER END-----");
+
         return ResponseDto.set(HttpStatus.OK, "회원 정보 조회", userResponseDto);
 
     }
 
     @Transactional
     public ResponseDto<String> updateUserDepartment(Long id, UserDepartmentDto userDepartmentDto, User user) {
+
+        log.info("-----UPDATE USER DETAIL START-----");
 
         if (!Objects.equals(id, user.getId())) {
             throw new GlobalException(ExceptionEnum.UNAUTHORIZED);
@@ -198,10 +220,12 @@ public class UserService {
             userDetail.setTeacherName(teacher.getName());
             userDetail.updateDepartment(teacher.getUserDetail().getGrade(), teacher.getUserDetail().getClassNum());
             userDetailRepository.save(userDetail);
+            log.info("-----UPDATE USER DETAIL END-----");
             return ResponseDto.setSuccess(HttpStatus.OK, "선생님 등록 완료!");
         } else {
             userDetail.updateDepartment(userDepartmentDto.getGrade(), userDepartmentDto.getGroup());
             userDetailRepository.save(userDetail);
+            log.info("-----UPDATE USER DETAIL END-----");
             return ResponseDto.setSuccess(HttpStatus.OK, "학년 / 반 입력 성공!");
         }
 

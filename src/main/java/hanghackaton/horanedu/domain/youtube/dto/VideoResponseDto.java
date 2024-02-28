@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 public class VideoResponseDto {
 
     private Long id;
-    private String playTime;
+    private Integer playTime;
 
-    public VideoResponseDto(Long id, String playTime) {
+    public VideoResponseDto(Long id, Integer playTime) {
         this.id = id;
         this.playTime = playTime;
     }

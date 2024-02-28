@@ -14,6 +14,7 @@ import hanghackaton.horanedu.domain.board.repository.postImage.PostImageReposito
 import hanghackaton.horanedu.domain.user.entity.User;
 import hanghackaton.horanedu.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ClassPostService {
 
     private final UserRepository userRepository;
@@ -36,6 +38,8 @@ public class ClassPostService {
     //학급 게시물 생성
     @Transactional
     public ResponseDto<String> createClassPost(PostRequestDto postRequestDto, List<MultipartFile> requestImages, User user) throws IOException {
+
+        log.info("-----CREATE CLASS POST START-----");
 
         User userNow = userRepository.findById(user.getId()).orElseThrow(
                 () -> new GlobalException(ExceptionEnum.NOT_FOUND_USER)
@@ -57,6 +61,8 @@ public class ClassPostService {
         userNow.addClassPost(classPost);
         classPostRepository.save(classPost);
 
+        log.info("-----CREATE CLASS POST END-----");
+
         return ResponseDto.setSuccess(HttpStatus.OK, "학급 게시물 생성");
 
     }
@@ -64,11 +70,15 @@ public class ClassPostService {
     @Transactional(readOnly = true)
     public ResponseDto<ClassPostResponseDto> getClassPost(Long id) {
 
+        log.info("-----READ CLASS POST START-----");
+
         ClassPost classPost = classPostRepository.findById(id).orElseThrow(
                 () -> new GlobalException(ExceptionEnum.NOT_FOUND_POST)
         );
 
         ClassPostResponseDto classPostResponseDto = new ClassPostResponseDto(classPost);
+
+        log.info("-----READ CLASS POST END-----");
 
         return ResponseDto.setSuccess(HttpStatus.OK, "학급 게시물 " + id + "번 조회", classPostResponseDto);
 
@@ -79,6 +89,8 @@ public class ClassPostService {
                                                User user,
                                                PatchPostRequestDto patchPostRequestDto,
                                                List<MultipartFile> requestImages) throws IOException {
+
+        log.info("-----UPDATE CLASS POST START-----");
 
         //현재 로그인 된 유저가 존재 하는지 확인
         User userNow = userRepository.findUserById(user.getId()).orElseThrow(
@@ -110,12 +122,16 @@ public class ClassPostService {
             classPostRepository.save(classPost);
         }
 
+        log.info("-----UPDATE CLASS POST END-----");
+
         return ResponseDto.setSuccess(HttpStatus.OK, "학급 게시글 수정");
 
     }
 
     @Transactional
     public ResponseDto<String> deleteClassPost(Long id, User user) {
+
+        log.info("-----DELETE CLASS POST START-----");
 
         //현재 로그인 된 유저가 존재 하는지 확인
         User userNow = userRepository.findUserById(user.getId()).orElseThrow(
@@ -131,6 +147,8 @@ public class ClassPostService {
         }
 
         classPostRepository.delete(classPost);
+
+        log.info("-----DELETE CLASS POST END-----");
 
         return ResponseDto.setSuccess(HttpStatus.OK, "학급 게시글 삭제");
 

@@ -43,6 +43,8 @@ public class PostService {
     @Transactional
     public ResponseDto<String> createPost(PostRequestDto postRequestDto, List<MultipartFile> requestImages, User user) throws IOException {
 
+        log.info("-----CREATE POST START-----");
+
         //현재 로그인 된 유저가 존재 하는지 확인
         User userNow = userRepository.findById(user.getId()).orElseThrow(
                 () -> new GlobalException(ExceptionEnum.NOT_FOUND_USER)
@@ -70,6 +72,8 @@ public class PostService {
         userNow.addPost(post);
         postRepository.save(post);
 
+        log.info("-----CREATE POST END-----");
+
         return ResponseDto.setSuccess(HttpStatus.OK, "게시물 생선 완료!");
     }
 
@@ -77,6 +81,8 @@ public class PostService {
     //게시물 조회
     @Transactional
     public ResponseDto<PostResponseDto> getPost(Long id) {
+
+        log.info("-----READ POST DETAIL START-----");
 
         //게시글이 존재하는지 확인 및 데이터 베이스에서 가져오기
         Post post = postRepository.findById(id).orElseThrow(
@@ -88,6 +94,8 @@ public class PostService {
 
         PostResponseDto postResponseDto = new PostResponseDto(post);
 
+        log.info("-----READ POST DETAIL END-----");
+
         return ResponseDto.setSuccess(HttpStatus.OK, "게시물 " + id + "번", postResponseDto);
     }
 
@@ -96,6 +104,8 @@ public class PostService {
                                           User user,
                                           PatchPostRequestDto patchPostRequestDto,
                                           List<MultipartFile> requestImages) throws IOException {
+
+        log.info("-----UPDATE POST START-----");
 
         //현재 로그인 된 유저가 존재 하는지 확인
         User userNow = userRepository.findUserById(user.getId()).orElseThrow(
@@ -127,6 +137,8 @@ public class PostService {
             postRepository.save(post);
         }
 
+        log.info("-----UPDATE POST END-----");
+
         return ResponseDto.setSuccess(HttpStatus.OK, "게시글 수정");
 
     }
@@ -134,6 +146,8 @@ public class PostService {
     @Transactional
     public ResponseDto<String> deletePost(Long id,
                                           User user) {
+
+        log.info("-----DELETE POST START-----");
 
         //현재 로그인 된 유저가 존재 하는지 확인
         User userNow = userRepository.findUserById(user.getId()).orElseThrow(
@@ -149,6 +163,8 @@ public class PostService {
         }
 
         postRepository.delete(post);
+
+        log.info("-----DELETE POST END-----");
 
         return ResponseDto.setSuccess(HttpStatus.OK, "게시글 삭제");
     }
