@@ -50,8 +50,6 @@ public class UserService {
     private final SchoolRepository schoolRepository;
     private final VideoRepository videoRepository;
 
-    private static final String ADMIN_CODE = "horang";
-
     //회원가입
     @Transactional
     public ResponseDto<String> signup(SignupDto signupDto) {
@@ -66,12 +64,9 @@ public class UserService {
             throw new GlobalException(ExceptionEnum.DUPLICATED_EMAIL);
         }
 
-        UserRole userRole = UserRole.USER;
-        if (signupDto.isAdmin()) {
-            if (!StringUtils.pathEquals(ADMIN_CODE, signupDto.getAdminCode())) {
-                throw new GlobalException(ExceptionEnum.UNAUTHORIZED);
-            }
-            userRole = UserRole.ADMIN;
+        UserRole userRole = UserRole.STUDENT;
+        if (!signupDto.isRole()) {
+            userRole = UserRole.TEACHER;
         }
 
         //유저 생성
@@ -79,7 +74,7 @@ public class UserService {
         userRepository.saveAndFlush(user);
 
         //유저 계정
-        if (Objects.equals(userRole, UserRole.USER)) {
+        if (Objects.equals(userRole, UserRole.STUDENT)) {
             //유저 상세 생성
             UserDetail userDetail = new UserDetail(user);
             userDetailRepository.saveAndFlush(userDetail);

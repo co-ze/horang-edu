@@ -21,6 +21,9 @@ public class School {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private String grade;
+
     @OneToMany(mappedBy = "school", fetch = FetchType.LAZY)
     private List<UserDetail> userDetailList = new ArrayList<>();
 
@@ -32,6 +35,7 @@ public class School {
 
     public School(SchoolRequestDto schoolRequestDto) {
         this.name = schoolRequestDto.getName();
+        this.grade = schoolRequestDto.getGrade();
         this.score = 0;
         this.ranking = 0;
     }

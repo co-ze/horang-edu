@@ -26,6 +26,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -156,7 +157,7 @@ public class KakaoService {
                 String email = userInfo.getEmail();
 
                 //유저 생성
-                User newKakaoUser = new User(email, name, encodedPassword, UserRole.USER, kakaoId);
+                User newKakaoUser = new User(email, name, encodedPassword, UserRole.STUDENT, kakaoId);
                 userRepository.saveAndFlush(newKakaoUser);
                 //유저 상세 생성
                 UserDetail userDetail = new UserDetail(newKakaoUser);
