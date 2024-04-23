@@ -24,6 +24,9 @@ public class School {
     @Column(nullable = false)
     private String grade;
 
+    @Column(nullable = false)
+    private Long teacher;
+
     @OneToMany(mappedBy = "school", fetch = FetchType.LAZY)
     private List<UserDetail> userDetailList = new ArrayList<>();
 
@@ -33,11 +36,20 @@ public class School {
     @Column(nullable = false)
     private int ranking;
 
-    public School(SchoolRequestDto schoolRequestDto) {
+    @Column(nullable = false)
+    private String groupCode;
+
+    public School(SchoolRequestDto schoolRequestDto, Long teacher) {
         this.name = schoolRequestDto.getName();
         this.grade = schoolRequestDto.getGrade();
+        this.teacher = teacher;
         this.score = 0;
         this.ranking = 0;
+        this.groupCode = "-";
+    }
+
+    public void setGroupCode(StringBuffer code) {
+        this.groupCode = String.valueOf(code);
     }
 
     public void updateRank(int rank) {

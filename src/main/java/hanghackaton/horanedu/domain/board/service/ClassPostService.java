@@ -47,7 +47,7 @@ public class ClassPostService {
 
         String title = postRequestDto.getTitle();
         String content = postRequestDto.getContent();
-        String gradeClass = userNow.getUserDetail().getGrade() + "-" + userNow.getUserDetail().getClassNum();
+        String gradeClass = userNow.getUserDetail().getGrade() + "-"; //userNow.getUserDetail().getClassNum();
         ClassPost classPost = new ClassPost(title, content, gradeClass, userNow.getName());
 
         List<PostImage> images = new ArrayList<>();

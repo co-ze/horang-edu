@@ -5,6 +5,7 @@ import hanghackaton.horanedu.common.dto.ResponseDto;
 import hanghackaton.horanedu.common.security.UserDetailsImpl;
 import hanghackaton.horanedu.domain.user.dto.authDto.LoginDto;
 import hanghackaton.horanedu.domain.user.dto.authDto.SignupDto;
+import hanghackaton.horanedu.domain.user.dto.authDto.TempSignupDto;
 import hanghackaton.horanedu.domain.user.dto.requestDto.UserDepartmentDto;
 import hanghackaton.horanedu.domain.user.dto.responseDto.UserResponseDto;
 import hanghackaton.horanedu.domain.user.dto.requestDto.UserUpdateRequestDto;
@@ -66,6 +67,12 @@ public class UserController {
                                                     @RequestBody UserDepartmentDto userDepartmentDto,
                                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userService.updateUserDepartment(id, userDepartmentDto, userDetails.getUser());
+    }
+
+    @PostMapping("/signup/temp")
+    public ResponseDto<String> createTempUser(@RequestBody TempSignupDto tempSignupDto,
+                                              @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return userService.createTempUser(tempSignupDto, userDetails.getUser());
     }
 
     //    @GetMapping("/rank/{id}")

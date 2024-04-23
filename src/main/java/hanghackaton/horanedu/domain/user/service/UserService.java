@@ -9,6 +9,7 @@ import hanghackaton.horanedu.domain.school.entity.School;
 import hanghackaton.horanedu.domain.school.repository.SchoolRepository;
 import hanghackaton.horanedu.domain.user.dto.authDto.LoginDto;
 import hanghackaton.horanedu.domain.user.dto.authDto.SignupDto;
+import hanghackaton.horanedu.domain.user.dto.authDto.TempSignupDto;
 import hanghackaton.horanedu.domain.user.dto.requestDto.UserDepartmentDto;
 import hanghackaton.horanedu.domain.user.dto.requestDto.UserUpdateRequestDto;
 import hanghackaton.horanedu.domain.user.dto.responseDto.PatchUserResponseDto;
@@ -205,25 +206,35 @@ public class UserService {
         }
         UserDetail userDetail = userDetailRepository.findUserDetailByUser(user);
 
-        String teacherEmail = userDepartmentDto.getEmail();
+        Long groupId = userDepartmentDto.getGroupId();
+        School group = schoolRepository.findById(groupId).orElseThrow(
+                () -> new GlobalException(ExceptionEnum.NOT_FOUND_SCHOOL)
+        );
+
+        Long teacherId = group.getTeacher();
         User teacher;
-        if (!Objects.equals(teacherEmail, "")) {
-            teacher = userRepository.findUserByEmail(teacherEmail);
-            if (teacher == null) {
-                throw new GlobalException(ExceptionEnum.NOT_FOUND_TEACHER);
-            }
-            userDetail.setTeacherName(teacher.getName());
-            userDetail.updateDepartment(teacher.getUserDetail().getGrade(), teacher.getUserDetail().getClassNum());
+
+        if (!Objects.equals(teacherId, null)) {
+            teacher = userRepository.findUserById(teacherId).orElseThrow(
+                    () -> new GlobalException(ExceptionEnum.NOT_FOUND_USER)
+            );
+//            userDetail.setTeacherName(teacher.getName());
+//            userDetail.updateDepartment(teacher.getUserDetail().getGrade(), teacher.getUserDetail().getClassNum());
             userDetailRepository.save(userDetail);
             log.info("-----UPDATE USER DETAIL END-----");
             return ResponseDto.setSuccess(HttpStatus.OK, "선생님 등록 완료!");
         } else {
-            userDetail.updateDepartment(userDepartmentDto.getGrade(), userDepartmentDto.getGroup());
+//            userDetail.updateDepartment(userDepartmentDto.getGrade(), userDepartmentDto.getGroup());
             userDetailRepository.save(userDetail);
             log.info("-----UPDATE USER DETAIL END-----");
             return ResponseDto.setSuccess(HttpStatus.OK, "학년 / 반 입력 성공!");
         }
 
+    }
+
+    @Transactional
+    public ResponseDto<String> createTempUser(TempSignupDto tempSignupDto, User loginUser) {
+        return null;
     }
 
 }
