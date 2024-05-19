@@ -147,6 +147,7 @@ public class ClassPostService {
         );
         UserDetail userDetail = userNow.getUserDetail();
         School group = userDetail.getSchool();
+        if(group == null) throw new GlobalException(ExceptionEnum.NOT_JOIN_GROUP);
 
 
         Page<ClassPostResponseDto> result = classPostRepository.searchClassPosts(pageable, group.getGrade());

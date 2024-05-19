@@ -174,25 +174,35 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseDto<UserResponseDto> getUser(Long id, User user) {
+    public ResponseDto<UserResponseDto> getUser(User user) {
 
         log.info("-----READ USER START-----");
 
-        if (!Objects.equals(id, user.getId())) {
-            throw new GlobalException(ExceptionEnum.UNAUTHORIZED);
-        }
-
-        Optional<User> checkUser = userRepository.findById(id);
+        Optional<User> checkUser = userRepository.findById(user.getId());
         if (checkUser.isEmpty()) {
             throw new GlobalException(ExceptionEnum.NOT_FOUND_USER);
         }
 
+        UserProgress userProgress = userProgressRepository.findUserProgressByUser(user);
+        if (userProgress == null) throw new GlobalException(ExceptionEnum.NOT_FOUND_USER);
+
+        String schoolName;
+        if(user.getUserDetail().getSchool() == null){
+            schoolName = "없음";
+        }else{
+            schoolName = user.getUserDetail().getSchool().getName();
+        }
+
         UserResponseDto userResponseDto = new UserResponseDto(
+                user.getId(),
                 user.getEmail(),
                 user.getName(),
-                user.getUserDetail().getSchool(),
+                schoolName,
                 user.getRole(),
-                user.getUserDetail().getImage()
+                user.getUserDetail().getImage(),
+                userProgress.getLevel(),
+                userProgress.getChapter(),
+                userProgress.getExp()
         );
 
         log.info("-----READ USER END-----");

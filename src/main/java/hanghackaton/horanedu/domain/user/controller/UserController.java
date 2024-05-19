@@ -52,10 +52,9 @@ public class UserController {
         return userService.updateUser(id, image, userUpdateRequestDto, userDetails.getUser());
     }
 
-    @GetMapping("/{id}")
-    public ResponseDto<UserResponseDto> getUser(@PathVariable Long id,
-                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.getUser(id, userDetails.getUser());
+    @GetMapping()
+    public ResponseDto<UserResponseDto> getUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.getUser(userDetails.getUser());
     }
 
     @GetMapping("/kakao")

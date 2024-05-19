@@ -23,6 +23,7 @@ public enum ExceptionEnum {
     EXPIRED_JWT_TOKEN(HttpStatus.UNAUTHORIZED, "401", "Expired JWT token, 만료된 JWT token 입니다."),
     UNSUPPORTED_JWT_TOKEN(HttpStatus.UNAUTHORIZED, "401", "Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다."),
     JWT_CLAIMS_IS_EMPTY(HttpStatus.UNAUTHORIZED, "401", "JWT claims is empty, 잘못된 JWT 토큰 입니다."),
+    NOT_JOIN_GROUP(HttpStatus.UNAUTHORIZED, "401", "학급에 가입해 주세요."),
 
     //403 Forbidden
     PROJECT_FORBIDDEN(HttpStatus.FORBIDDEN, "403", "작성자의 프로젝트만 포트폴리오에 추가할 수 있습니다."),
