@@ -7,7 +7,10 @@ import hanghackaton.horanedu.domain.school.dto.SchoolRequestDto;
 import hanghackaton.horanedu.domain.school.entity.School;
 import hanghackaton.horanedu.domain.school.repository.SchoolRepository;
 import hanghackaton.horanedu.domain.user.entity.User;
+import hanghackaton.horanedu.domain.user.entity.UserDetail;
 import hanghackaton.horanedu.domain.user.repository.UserRepository;
+import hanghackaton.horanedu.domain.user.repository.userDetail.UserDetailRepository;
+import hanghackaton.horanedu.domain.user.userEnum.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,7 @@ public class SchoolService {
 
     private final SchoolRepository schoolRepository;
     private final UserRepository userRepository;
+    private final UserDetailRepository userDetailRepository;
 
     @Transactional
     public ResponseDto<String> createSchool(User loginUser, SchoolRequestDto schoolRequestDto) {
@@ -29,9 +33,16 @@ public class SchoolService {
         User teacher = userRepository.findUserById(loginUser.getId()).orElseThrow(
                 () -> new GlobalException(ExceptionEnum.NOT_FOUND_USER)
         );
+        if(teacher.getRole() != UserRole.TEACHER) throw new GlobalException(ExceptionEnum.UNAUTHORIZED);
 
         School school = new School(schoolRequestDto, teacher.getId());
-        schoolRepository.save(school);
+        schoolRepository.saveAndFlush(school);
+
+        UserDetail tDetail = userDetailRepository.findUserDetailByUser(teacher);
+        if(tDetail == null) throw new GlobalException(ExceptionEnum.NOT_FOUND_USER);
+
+        tDetail.setSchool(school);
+        userDetailRepository.save(tDetail);
 
         return ResponseDto.setSuccess(HttpStatus.OK, "학교가 생성되었습니다.");
     }
@@ -42,6 +53,8 @@ public class SchoolService {
         User teacher = userRepository.findUserById(loginUser.getId()).orElseThrow(
                 () -> new GlobalException(ExceptionEnum.NOT_FOUND_USER)
         );
+
+        if(teacher.getRole() != UserRole.TEACHER) throw new GlobalException(ExceptionEnum.UNAUTHORIZED);
 
         School school = schoolRepository.findById(schoolId).orElseThrow(
                 () -> new GlobalException(ExceptionEnum.NOT_FOUND_SCHOOL)

@@ -24,12 +24,8 @@ public class UserDetail {
     @Column
     private String image;
 
-    @Column
-    private int grade;
-
     public UserDetail(User user) {
         this.user = user;
-        this.grade = 0;
     }
 
     public void setSchool(School school) {
@@ -38,9 +34,5 @@ public class UserDetail {
 
     public void updateImage(String image) {
         this.image = image;
-    }
-
-    public void updateDepartment(int grade, int classNum) {
-        this.grade = grade;
     }
 }

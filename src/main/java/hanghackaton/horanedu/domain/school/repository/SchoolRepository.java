@@ -10,5 +10,6 @@ import java.util.Optional;
 public interface SchoolRepository extends JpaRepository<School, Long>, SchoolInquiry {
     Optional<School> findSchoolByName(String name);
 
+    School findSchoolByGroupCode(String groupCode);
     School findSchoolById(Long id);
 }

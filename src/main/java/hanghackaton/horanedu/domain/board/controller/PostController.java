@@ -6,14 +6,14 @@ import hanghackaton.horanedu.domain.board.dto.ClassPostResponseDto;
 import hanghackaton.horanedu.domain.board.dto.PatchPostRequestDto;
 import hanghackaton.horanedu.domain.board.dto.PostRequestDto;
 import hanghackaton.horanedu.domain.board.dto.PostResponseDto;
+import hanghackaton.horanedu.domain.board.postEnum.PostCategoryEnum;
 import hanghackaton.horanedu.domain.board.service.ClassPostService;
 import hanghackaton.horanedu.domain.board.service.PostService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,15 +26,14 @@ public class PostController {
     private final PostService postService;
     private final ClassPostService classPostService;
 
-    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseDto<String> createPost(@RequestPart PostRequestDto postRequestDto,
-                                          @RequestPart(name = "images", required = false) List<MultipartFile> images,
+    @PostMapping()
+    public ResponseDto<String> createPost(@RequestBody PostRequestDto postRequestDto,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
 
         if (StringUtils.pathEquals(postRequestDto.getCategory(), "")) {
-            return classPostService.createClassPost(postRequestDto, images, userDetails.getUser());
+            return classPostService.createClassPost(postRequestDto, userDetails.getUser());
         } else {
-            return postService.createPost(postRequestDto, images, userDetails.getUser());
+            return postService.createPost(postRequestDto, userDetails.getUser());
         }
     }
 
@@ -51,17 +50,15 @@ public class PostController {
     @PatchMapping("/{id}")
     public ResponseDto<String> updatePost(@PathVariable Long id,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails,
-                                          @RequestPart(name = "patchPostRequestDto") PatchPostRequestDto patchPostRequestDto,
-                                          @RequestPart(name = "images", required = false) List<MultipartFile> images) throws IOException {
-        return postService.updatePost(id, userDetails.getUser(), patchPostRequestDto, images);
+                                          @RequestBody PatchPostRequestDto patchPostRequestDto) throws IOException {
+        return postService.updatePost(id, userDetails.getUser(), patchPostRequestDto);
     }
 
     @PatchMapping("/class/{id}")
     public ResponseDto<String> updateClassPost(@PathVariable Long id,
                                                @AuthenticationPrincipal UserDetailsImpl userDetails,
-                                               @RequestPart(name = "patchPostRequestDto") PatchPostRequestDto patchPostRequestDto,
-                                               @RequestPart(name = "images", required = false) List<MultipartFile> images) throws IOException {
-        return classPostService.updateClassPost(id, userDetails.getUser(), patchPostRequestDto, images);
+                                               @RequestBody PatchPostRequestDto patchPostRequestDto) throws IOException {
+        return classPostService.updateClassPost(id, userDetails.getUser(), patchPostRequestDto);
     }
 
     @DeleteMapping("/{id}")
@@ -74,6 +71,20 @@ public class PostController {
     public ResponseDto<String> deleteClassPost(@PathVariable Long id,
                                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return classPostService.deleteClassPost(id, userDetails.getUser());
+    }
+
+    @GetMapping("/list")
+    public ResponseDto<Page<PostResponseDto>> getPostList(@RequestParam int page,
+                                                          @RequestParam int size,
+                                                          @RequestParam String category){
+        return postService.getPostList(page, size, category);
+    }
+
+    @GetMapping("/class/list")
+    public ResponseDto<Page<ClassPostResponseDto>> getClassPostList(@RequestParam int page,
+                                                                    @RequestParam int size,
+                                                                    @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return classPostService.getClassPostList(page, size, userDetails.getUser());
     }
 
 }

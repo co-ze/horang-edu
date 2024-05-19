@@ -13,6 +13,7 @@ import hanghackaton.horanedu.domain.user.dto.authDto.TempSignupDto;
 import hanghackaton.horanedu.domain.user.dto.requestDto.UserDepartmentDto;
 import hanghackaton.horanedu.domain.user.dto.requestDto.UserUpdateRequestDto;
 import hanghackaton.horanedu.domain.user.dto.responseDto.PatchUserResponseDto;
+import hanghackaton.horanedu.domain.user.dto.responseDto.TempSignupResponseDto;
 import hanghackaton.horanedu.domain.user.dto.responseDto.UserResponseDto;
 import hanghackaton.horanedu.domain.user.entity.User;
 import hanghackaton.horanedu.domain.user.entity.UserDetail;
@@ -36,6 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -111,8 +113,19 @@ public class UserService {
                 () -> new GlobalException(ExceptionEnum.LOGIN_FORBIDDEN)
         );
 
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new GlobalException(ExceptionEnum.LOGIN_FORBIDDEN);
+        log.info(String.valueOf(user));
+        log.info(user.getPassword());
+
+        if (user.getPassword().length() != 6) {
+            log.info("-----user.getPassword().length() != 6-----");
+            if (!passwordEncoder.matches(password, user.getPassword())) {
+                throw new GlobalException(ExceptionEnum.LOGIN_FORBIDDEN);
+            }
+        }else{
+            log.info("-----else-----");
+            if (!StringUtils.pathEquals(password, user.getPassword())) {
+                throw new GlobalException(ExceptionEnum.LOGIN_FORBIDDEN);
+            }
         }
 
         String token = jwtUtil.createToken(user.getId(), user.getEmail(), user.getRole());
@@ -144,19 +157,11 @@ public class UserService {
             imageUrl = s3Service.uploadFile(image);
         }
 
-        School school = schoolRepository.findSchoolByName(userUpdateRequestDto.getSchool()).orElseThrow(
-                () -> new GlobalException(ExceptionEnum.NOT_FOUND_SCHOOL)
-        );
-
         //변경
         UserDetail userDetail = user.getUserDetail();
 
         user.updateName(userUpdateRequestDto.getName());
-        userDetail.setSchool(school);
-        school.getUserDetailList().add(userDetail);
         userDetail.updateImage(imageUrl);
-
-        schoolRepository.saveAndFlush(school);
         userRepository.saveAndFlush(user);
         userDetailRepository.saveAndFlush(userDetail);
 
@@ -197,44 +202,74 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseDto<String> updateUserDepartment(Long id, UserDepartmentDto userDepartmentDto, User user) {
+    public ResponseDto<String> updateUserDepartment(UserDepartmentDto userDepartmentDto, User user) {
 
         log.info("-----UPDATE USER DETAIL START-----");
-
-        if (!Objects.equals(id, user.getId())) {
-            throw new GlobalException(ExceptionEnum.UNAUTHORIZED);
-        }
         UserDetail userDetail = userDetailRepository.findUserDetailByUser(user);
 
-        Long groupId = userDepartmentDto.getGroupId();
-        School group = schoolRepository.findById(groupId).orElseThrow(
-                () -> new GlobalException(ExceptionEnum.NOT_FOUND_SCHOOL)
-        );
-
-        Long teacherId = group.getTeacher();
-        User teacher;
-
-        if (!Objects.equals(teacherId, null)) {
-            teacher = userRepository.findUserById(teacherId).orElseThrow(
-                    () -> new GlobalException(ExceptionEnum.NOT_FOUND_USER)
-            );
-//            userDetail.setTeacherName(teacher.getName());
-//            userDetail.updateDepartment(teacher.getUserDetail().getGrade(), teacher.getUserDetail().getClassNum());
-            userDetailRepository.save(userDetail);
-            log.info("-----UPDATE USER DETAIL END-----");
-            return ResponseDto.setSuccess(HttpStatus.OK, "선생님 등록 완료!");
-        } else {
-//            userDetail.updateDepartment(userDepartmentDto.getGrade(), userDepartmentDto.getGroup());
-            userDetailRepository.save(userDetail);
-            log.info("-----UPDATE USER DETAIL END-----");
-            return ResponseDto.setSuccess(HttpStatus.OK, "학년 / 반 입력 성공!");
+        String groupCode = userDepartmentDto.getGroupCode();
+        School group = schoolRepository.findSchoolByGroupCode(groupCode);
+        if(group == null) {
+            throw new GlobalException(ExceptionEnum.NOT_FOUND_SCHOOL);
         }
+
+        userDetail.setSchool(group);
+        group.getUserDetailList().add(userDetail);
+        schoolRepository.saveAndFlush(group);
+        userDetailRepository.save(userDetail);
+
+        log.info("-----UPDATE USER DETAIL END-----");
+
+        return ResponseDto.setSuccess(HttpStatus.OK, "그룹 가입 완료!");
+
 
     }
 
     @Transactional
-    public ResponseDto<String> createTempUser(TempSignupDto tempSignupDto, User loginUser) {
-        return null;
+    public ResponseDto<TempSignupResponseDto> createTempUser(TempSignupDto tempSignupDto, User loginUser) {
+        log.info("-----임시 회원 생성 시작-----");
+        /*변수 할당*/
+        School group = schoolRepository.findById(tempSignupDto.getGroupId()).orElseThrow(
+                () -> new GlobalException(ExceptionEnum.NOT_FOUND_SCHOOL)
+        );
+        String tempName = tempSignupDto.getStudentName();
+        Optional<User> duplicateEmail = userRepository.findByEmail(tempName);
+        if (duplicateEmail.isPresent()) {
+            throw new GlobalException(ExceptionEnum.DUPLICATED_EMAIL);
+        }
+
+        User teacher = userRepository.findUserById(loginUser.getId()).orElseThrow(
+                () -> new GlobalException(ExceptionEnum.NOT_FOUND_USER)
+        );
+
+        Random random = new Random();
+        StringBuffer sb = new StringBuffer();
+        for(int i=0; i<6; i++) {
+            sb.append((char)(random.nextInt(26)+65));
+        }
+
+        String password = sb.toString();
+
+        //유저 생성
+        User user = new User(tempName, tempName, password, UserRole.STUDENT);
+        userRepository.saveAndFlush(user);
+
+        //유저 상세 생성
+        UserDetail userDetail = new UserDetail(user);
+        userDetail.setSchool(group);
+        userDetailRepository.saveAndFlush(userDetail);
+        user.setUserDetail(userDetail);
+        //유저 진행도 생성
+        UserProgress userProgress = new UserProgress(user);
+        userProgressRepository.saveAndFlush(userProgress);
+        //유저별 비디오 재생 시간 생성
+        Video video = new Video(user);
+        videoRepository.saveAndFlush(video);
+
+        TempSignupResponseDto responseDto = new TempSignupResponseDto(tempName, password);
+        log.info("-----임시 회원 생성 종료-----");
+
+        return ResponseDto.setSuccess(HttpStatus.OK, "임시 계정 생성", responseDto);
     }
 
 }

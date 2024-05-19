@@ -7,6 +7,7 @@ import hanghackaton.horanedu.domain.user.dto.authDto.LoginDto;
 import hanghackaton.horanedu.domain.user.dto.authDto.SignupDto;
 import hanghackaton.horanedu.domain.user.dto.authDto.TempSignupDto;
 import hanghackaton.horanedu.domain.user.dto.requestDto.UserDepartmentDto;
+import hanghackaton.horanedu.domain.user.dto.responseDto.TempSignupResponseDto;
 import hanghackaton.horanedu.domain.user.dto.responseDto.UserResponseDto;
 import hanghackaton.horanedu.domain.user.dto.requestDto.UserUpdateRequestDto;
 import hanghackaton.horanedu.domain.user.dto.responseDto.PatchUserResponseDto;
@@ -42,7 +43,7 @@ public class UserController {
 
     @PatchMapping(value = "/{id}",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_FORM_URLENCODED_VALUE})
-    public ResponseDto<PatchUserResponseDto> updateUserDetail(@PathVariable Long id,
+    public ResponseDto<PatchUserResponseDto> updateUser(@PathVariable Long id,
                                                               @RequestPart(name = "image", required = false)
                                                               MultipartFile image,
                                                               @RequestPart(name = "userUpdateRequestDto")
@@ -62,16 +63,15 @@ public class UserController {
         return kakaoService.loginWithKakao(code, response);
     }
 
-    @PatchMapping("/detail/{id}")
-    public ResponseDto<String> updateUserDepartment(@PathVariable Long id,
-                                                    @RequestBody UserDepartmentDto userDepartmentDto,
+    @PatchMapping("/detail")
+    public ResponseDto<String> updateUserDepartment(@RequestBody UserDepartmentDto userDepartmentDto,
                                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.updateUserDepartment(id, userDepartmentDto, userDetails.getUser());
+        return userService.updateUserDepartment(userDepartmentDto, userDetails.getUser());
     }
 
     @PostMapping("/signup/temp")
-    public ResponseDto<String> createTempUser(@RequestBody TempSignupDto tempSignupDto,
-                                              @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseDto<TempSignupResponseDto> createTempUser(@RequestBody TempSignupDto tempSignupDto,
+                                                             @AuthenticationPrincipal UserDetailsImpl userDetails){
         return userService.createTempUser(tempSignupDto, userDetails.getUser());
     }
 

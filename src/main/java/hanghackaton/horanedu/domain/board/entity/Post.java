@@ -1,6 +1,5 @@
 package hanghackaton.horanedu.domain.board.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import hanghackaton.horanedu.domain.board.postEnum.PostCategoryEnum;
 import hanghackaton.horanedu.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -11,7 +10,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Getter
@@ -42,10 +40,6 @@ public class Post {
     @Column(nullable = false)
     private String userName;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<PostImage> images;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -55,10 +49,6 @@ public class Post {
         this.content = content;
         this.category = category;
         this.userName = userName;
-    }
-
-    public void setImage(List<PostImage> postImage) {
-        this.images = postImage;
     }
 
     public void setUser(User user) {
