@@ -27,7 +27,7 @@ public class School {
     @Column(nullable = false)
     private Long teacher;
 
-    @OneToMany(mappedBy = "school", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "school", fetch = FetchType.EAGER)
     private List<UserDetail> userDetailList = new ArrayList<>();
 
     @Column(nullable = false)

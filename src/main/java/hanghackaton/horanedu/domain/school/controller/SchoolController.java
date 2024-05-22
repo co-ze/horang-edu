@@ -3,6 +3,7 @@ package hanghackaton.horanedu.domain.school.controller;
 import hanghackaton.horanedu.common.dto.ResponseDto;
 import hanghackaton.horanedu.common.security.UserDetailsImpl;
 import hanghackaton.horanedu.domain.school.dto.SchoolRequestDto;
+import hanghackaton.horanedu.domain.school.dto.SchoolResponseDto;
 import hanghackaton.horanedu.domain.school.service.SchoolService;
 import hanghackaton.horanedu.domain.school.dto.SchoolRankDto;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +29,8 @@ public class SchoolController {
         return schoolService.patchGroupCode(id, userDetails.getUser());
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseDto<SchoolRankDto> getSchoolRank(@PathVariable Long id) {
-//        return schoolService.getSchoolRank(id);
-//    }
+    @GetMapping()
+    public ResponseDto<SchoolResponseDto> getSchool(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return schoolService.getSchool(userDetails.getUser());
+    }
 }

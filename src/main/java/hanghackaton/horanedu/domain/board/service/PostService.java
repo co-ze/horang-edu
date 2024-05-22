@@ -6,6 +6,7 @@ import hanghackaton.horanedu.common.exception.GlobalException;
 import hanghackaton.horanedu.domain.board.dto.PatchPostRequestDto;
 import hanghackaton.horanedu.domain.board.dto.PostRequestDto;
 import hanghackaton.horanedu.domain.board.dto.PostResponseDto;
+import hanghackaton.horanedu.domain.board.dto.SimPostResDto;
 import hanghackaton.horanedu.domain.board.entity.Post;
 import hanghackaton.horanedu.domain.board.postEnum.PostCategoryEnum;
 import hanghackaton.horanedu.domain.board.repository.post.PostRepository;
@@ -76,7 +77,9 @@ public class PostService {
         //조회수 올리기 (QueryDsl)
         postRepository.increaseViews(id);
 
-        PostResponseDto postResponseDto = new PostResponseDto(post);
+        String email = post.getUser().getEmail();
+
+        PostResponseDto postResponseDto = new PostResponseDto(post, email);
 
         log.info("-----READ POST DETAIL END-----");
 
@@ -142,7 +145,7 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseDto<Page<PostResponseDto>> getPostList(int page, int size, String category) {
+    public ResponseDto<Page<SimPostResDto>> getPostList(int page, int size, String category) {
         Sort sort = Sort.by(Sort.Direction.DESC, "created");
         Pageable pageable = PageRequest.of(page, size, sort);
         PostCategoryEnum categoryEnum;
@@ -156,7 +159,7 @@ public class PostService {
         }
 
 
-        Page<PostResponseDto> result = postRepository.searchPosts(pageable, categoryEnum);
+        Page<SimPostResDto> result = postRepository.searchPosts(pageable, categoryEnum);
 
         return ResponseDto.set(HttpStatus.OK, "전체검색", result);
     }

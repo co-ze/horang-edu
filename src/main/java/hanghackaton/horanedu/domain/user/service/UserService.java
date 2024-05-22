@@ -183,8 +183,17 @@ public class UserService {
             throw new GlobalException(ExceptionEnum.NOT_FOUND_USER);
         }
 
-        UserProgress userProgress = userProgressRepository.findUserProgressByUser(user);
-        if (userProgress == null) throw new GlobalException(ExceptionEnum.NOT_FOUND_USER);
+        UserProgress userProgress;
+        int level = 0;
+        int chapter = 0;
+        int exp = 0;
+        if(Objects.equals(user.getRole(), UserRole.STUDENT)) {
+            userProgress = userProgressRepository.findUserProgressByUser(user);
+            if (userProgress == null) throw new GlobalException(ExceptionEnum.NOT_FOUND_USER);
+            level = userProgress.getLevel();
+            chapter = userProgress.getChapter();
+            exp = userProgress.getExp();
+        }
 
         String schoolName;
         if(user.getUserDetail().getSchool() == null){
@@ -200,9 +209,9 @@ public class UserService {
                 schoolName,
                 user.getRole(),
                 user.getUserDetail().getImage(),
-                userProgress.getLevel(),
-                userProgress.getChapter(),
-                userProgress.getExp()
+                level,
+                chapter,
+                exp
         );
 
         log.info("-----READ USER END-----");

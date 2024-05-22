@@ -3,10 +3,7 @@ package hanghackaton.horanedu.domain.board.service;
 import hanghackaton.horanedu.common.dto.ResponseDto;
 import hanghackaton.horanedu.common.exception.ExceptionEnum;
 import hanghackaton.horanedu.common.exception.GlobalException;
-import hanghackaton.horanedu.domain.board.dto.ClassPostResponseDto;
-import hanghackaton.horanedu.domain.board.dto.PatchPostRequestDto;
-import hanghackaton.horanedu.domain.board.dto.PostRequestDto;
-import hanghackaton.horanedu.domain.board.dto.PostResponseDto;
+import hanghackaton.horanedu.domain.board.dto.*;
 import hanghackaton.horanedu.domain.board.entity.ClassPost;
 import hanghackaton.horanedu.domain.board.postEnum.PostCategoryEnum;
 import hanghackaton.horanedu.domain.board.repository.classPost.ClassPostRepository;
@@ -72,7 +69,9 @@ public class ClassPostService {
                 () -> new GlobalException(ExceptionEnum.NOT_FOUND_POST)
         );
 
-        ClassPostResponseDto classPostResponseDto = new ClassPostResponseDto(classPost);
+        String email = classPost.getUser().getEmail();
+
+        ClassPostResponseDto classPostResponseDto = new ClassPostResponseDto(classPost, email);
 
         log.info("-----READ CLASS POST END-----");
 
@@ -139,7 +138,7 @@ public class ClassPostService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseDto<Page<ClassPostResponseDto>> getClassPostList(int page, int size, User loginUser) {
+    public ResponseDto<Page<SimCPostResDto>> getClassPostList(int page, int size, User loginUser) {
         Sort sort = Sort.by(Sort.Direction.DESC, "created");
         Pageable pageable = PageRequest.of(page, size, sort);
         User userNow = userRepository.findById(loginUser.getId()).orElseThrow(
@@ -150,7 +149,7 @@ public class ClassPostService {
         if(group == null) throw new GlobalException(ExceptionEnum.NOT_JOIN_GROUP);
 
 
-        Page<ClassPostResponseDto> result = classPostRepository.searchClassPosts(pageable, group.getGrade());
+        Page<SimCPostResDto> result = classPostRepository.searchClassPosts(pageable, group.getGrade());
 
         return ResponseDto.set(HttpStatus.OK, "학급 게시판 조회", result);
     }

@@ -4,6 +4,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import hanghackaton.horanedu.domain.board.dto.PostResponseDto;
+import hanghackaton.horanedu.domain.board.dto.SimPostResDto;
 import hanghackaton.horanedu.domain.board.entity.Post;
 import hanghackaton.horanedu.domain.board.entity.QPost;
 import hanghackaton.horanedu.domain.board.postEnum.PostCategoryEnum;
@@ -37,7 +38,7 @@ public class PostInquiryImpl extends QuerydslRepositorySupport implements PostIn
     }
 
     @Override
-    public Page<PostResponseDto> searchPosts(Pageable pageable, PostCategoryEnum category) {
+    public Page<SimPostResDto> searchPosts(Pageable pageable, PostCategoryEnum category) {
         QPost post = QPost.post;
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
@@ -55,8 +56,8 @@ public class PostInquiryImpl extends QuerydslRepositorySupport implements PostIn
                 .from(post)
                 .where(post.category.eq(category));
 
-        List<PostResponseDto> content = result.stream()
-                .map(PostResponseDto::new)
+        List<SimPostResDto> content = result.stream()
+                .map(SimPostResDto::new)
                 .toList();
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);

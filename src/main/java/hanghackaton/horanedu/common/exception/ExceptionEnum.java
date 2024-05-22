@@ -37,6 +37,8 @@ public enum ExceptionEnum {
     NOT_FOUND_TEACHER(HttpStatus.NOT_FOUND,"404", "선생님이 존재하지 않습니다."),
     NOT_FOUND_VIDEO(HttpStatus.NOT_FOUND, "404", "비디오 재생목록 리스트가 존재하지 않습니다. 제대로 생성됐는지 확인해보세요."),
     NOT_FOUND_GRADE(HttpStatus.NOT_FOUND, "404", "학급 게시물은 학급을 생성한 후에 작성할 수 있습니다."),
+    NOT_FOUND_USERPROGRESS(HttpStatus.NOT_FOUND,"404","계정 진행상황이 생성되지 않았습니다. 계정을 확인해주세요."),
+    NOT_FOUND_QUIZ(HttpStatus.NOT_FOUND, "404","존재하지 않는 퀴즈입니다."),
 
     // 409 Conflict
     DUPLICATED_USER_NAME(HttpStatus.CONFLICT, "409", "중복된 아이디가 이미 존재합니다."),

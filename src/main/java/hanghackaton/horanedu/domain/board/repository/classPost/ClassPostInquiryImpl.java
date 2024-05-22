@@ -3,6 +3,7 @@ package hanghackaton.horanedu.domain.board.repository.classPost;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import hanghackaton.horanedu.domain.board.dto.ClassPostResponseDto;
+import hanghackaton.horanedu.domain.board.dto.SimCPostResDto;
 import hanghackaton.horanedu.domain.board.entity.ClassPost;
 import hanghackaton.horanedu.domain.board.entity.Post;
 import hanghackaton.horanedu.domain.board.entity.QClassPost;
@@ -24,7 +25,7 @@ public class ClassPostInquiryImpl extends QuerydslRepositorySupport implements C
     }
 
     @Override
-    public Page<ClassPostResponseDto> searchClassPosts(Pageable pageable, String grade) {
+    public Page<SimCPostResDto> searchClassPosts(Pageable pageable, String grade) {
         QClassPost classPost = QClassPost.classPost;
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
@@ -42,8 +43,8 @@ public class ClassPostInquiryImpl extends QuerydslRepositorySupport implements C
                 .from(classPost)
                 .where(classPost.gradeClass.eq(grade));
 
-        List<ClassPostResponseDto> content = result.stream()
-                .map(ClassPostResponseDto::new)
+        List<SimCPostResDto> content = result.stream()
+                .map(SimCPostResDto::new)
                 .toList();
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);

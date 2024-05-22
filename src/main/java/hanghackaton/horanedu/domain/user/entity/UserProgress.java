@@ -31,8 +31,24 @@ public class UserProgress {
     public UserProgress(User user) {
         this.user = user;
         this.chapter = 1;
-        this.stage = 1;
+        this.stage = 0;
         this.exp = 0;
         this.level = 0;
+    }
+
+    public void setChapter(int chapter) {
+        this.chapter = chapter;
+    }
+
+    public void setStage(int stage) {
+        this.stage = stage;
+    }
+
+    public void setExp(int exp) {
+        this.exp += exp;
+    }
+
+    public void setLevel(int exp) {
+        this.level = exp/100;
     }
 }

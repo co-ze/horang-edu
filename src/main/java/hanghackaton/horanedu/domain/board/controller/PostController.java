@@ -2,10 +2,7 @@ package hanghackaton.horanedu.domain.board.controller;
 
 import hanghackaton.horanedu.common.dto.ResponseDto;
 import hanghackaton.horanedu.common.security.UserDetailsImpl;
-import hanghackaton.horanedu.domain.board.dto.ClassPostResponseDto;
-import hanghackaton.horanedu.domain.board.dto.PatchPostRequestDto;
-import hanghackaton.horanedu.domain.board.dto.PostRequestDto;
-import hanghackaton.horanedu.domain.board.dto.PostResponseDto;
+import hanghackaton.horanedu.domain.board.dto.*;
 import hanghackaton.horanedu.domain.board.postEnum.PostCategoryEnum;
 import hanghackaton.horanedu.domain.board.service.ClassPostService;
 import hanghackaton.horanedu.domain.board.service.PostService;
@@ -74,16 +71,16 @@ public class PostController {
     }
 
     @GetMapping("/list")
-    public ResponseDto<Page<PostResponseDto>> getPostList(@RequestParam int page,
+    public ResponseDto<Page<SimPostResDto>> getPostList(@RequestParam int page,
                                                           @RequestParam int size,
                                                           @RequestParam String category){
         return postService.getPostList(page, size, category);
     }
 
     @GetMapping("/class/list")
-    public ResponseDto<Page<ClassPostResponseDto>> getClassPostList(@RequestParam int page,
-                                                                    @RequestParam int size,
-                                                                    @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseDto<Page<SimCPostResDto>> getClassPostList(@RequestParam int page,
+                                                              @RequestParam int size,
+                                                              @AuthenticationPrincipal UserDetailsImpl userDetails){
         return classPostService.getClassPostList(page, size, userDetails.getUser());
     }
 

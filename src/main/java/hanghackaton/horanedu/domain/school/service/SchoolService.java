@@ -4,6 +4,8 @@ import hanghackaton.horanedu.common.dto.ResponseDto;
 import hanghackaton.horanedu.common.exception.ExceptionEnum;
 import hanghackaton.horanedu.common.exception.GlobalException;
 import hanghackaton.horanedu.domain.school.dto.SchoolRequestDto;
+import hanghackaton.horanedu.domain.school.dto.SchoolResponseDto;
+import hanghackaton.horanedu.domain.school.dto.UserListDto;
 import hanghackaton.horanedu.domain.school.entity.School;
 import hanghackaton.horanedu.domain.school.repository.SchoolRepository;
 import hanghackaton.horanedu.domain.user.entity.User;
@@ -17,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -76,13 +80,23 @@ public class SchoolService {
         }
     }
 
-//    @Transactional
-//    public void updateRank(List<School> schools) {
-//
-//    }
+    @Transactional
+    public ResponseDto<SchoolResponseDto> getSchool(User user) {
+        School group = user.getUserDetail().getSchool();
+        if(group == null) throw new GlobalException(ExceptionEnum.NOT_FOUND_SCHOOL);
 
-//    @Transactional(readOnly = true)
-//    public ResponseDto<SchoolRankDto> getSchoolRank(Long id) {
-//
-//    }
+        List<UserListDto> userListDto = new ArrayList<>();
+        List<UserDetail> userDetailList = group.getUserDetailList();
+        int size = userDetailList.size();
+
+        for(int i = 0; i < size; i++){
+            User groupUser = userRepository.findUserByUserDetail(userDetailList.get(i));
+            UserListDto userDto = new UserListDto(groupUser);
+            userListDto.add(userDto);
+        }
+
+        SchoolResponseDto response = new SchoolResponseDto(group, user.getName(), userListDto);
+
+        return ResponseDto.set(HttpStatus.OK, "그룹 조회", response);
+    }
 }

@@ -8,23 +8,20 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-public class ClassPostResponseDto {
-
+public class SimCPostResDto {
     private Long id;
     private String title;
     private String content;
     private String userName;
     private String gradeClass;
     private LocalDateTime created;
-    private String email;
 
-    public ClassPostResponseDto(ClassPost classPost, String email) {
+    public SimCPostResDto(ClassPost classPost) {
         this.id = classPost.getId();
         this.title = classPost.getTitle();
         this.content = classPost.getContent();
         this.userName = classPost.getUserName();
         this.gradeClass = classPost.getGradeClass();
         this.created = classPost.getCreated();
-        this.email = email;
     }
 }
