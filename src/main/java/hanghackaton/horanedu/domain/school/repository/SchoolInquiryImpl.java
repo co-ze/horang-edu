@@ -5,6 +5,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import hanghackaton.horanedu.domain.school.dto.SchoolRankDto;
 import hanghackaton.horanedu.domain.school.entity.QSchool;
 import hanghackaton.horanedu.domain.school.entity.School;
+import hanghackaton.horanedu.domain.user.dto.UserRankDto;
+import hanghackaton.horanedu.domain.user.entity.QUserProgress;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.data.domain.Page;
@@ -13,6 +15,8 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
+import java.util.OptionalInt;
+import java.util.stream.IntStream;
 
 public class SchoolInquiryImpl extends QuerydslRepositorySupport implements SchoolInquiry{
     @PersistenceContext
@@ -23,7 +27,7 @@ public class SchoolInquiryImpl extends QuerydslRepositorySupport implements Scho
     }
 
     @Override
-    public Page<SchoolRankDto> schoolRank(Pageable pageable) {
+    public List<SchoolRankDto> getSchoolRank() {
         QSchool school = QSchool.school;
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
@@ -31,17 +35,23 @@ public class SchoolInquiryImpl extends QuerydslRepositorySupport implements Scho
                 .select(school)
                 .from(school)
                 .orderBy(school.score.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
                 .fetch();
 
-        JPAQuery<Long> countQuery = queryFactory
-                .select(school.count())
-                .from(school);
-
-        List<SchoolRankDto> content = result.stream()
-                .map(SchoolRankDto::new)
+        return IntStream.range(0, result.size())
+                .mapToObj(index -> new SchoolRankDto(result.get(index), index+1))
                 .toList();
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    @Override
+    public int getLoginUserSchoolRank(List<SchoolRankDto> ranking, Long id){
+        OptionalInt schoolIndex = IntStream.range(0, ranking.size())
+                .filter(index -> ranking.get(index).getId().equals(id))
+                .findFirst();
+
+        if(schoolIndex.isPresent()){
+            return schoolIndex.getAsInt()+1;
+        }else{
+            return 0;
+        }
     }
 }

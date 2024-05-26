@@ -52,15 +52,8 @@ public class School {
         this.groupCode = String.valueOf(code);
     }
 
-    public void updateRank(int rank) {
-        this.ranking = rank;
-    }
-
     public void updateScore(int score) {
         this.score += score;
     }
 
-    public void resetScore(int score) {
-        this.score -= score;
-    }
 }

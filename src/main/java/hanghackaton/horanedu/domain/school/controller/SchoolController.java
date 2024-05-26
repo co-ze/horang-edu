@@ -2,10 +2,10 @@ package hanghackaton.horanedu.domain.school.controller;
 
 import hanghackaton.horanedu.common.dto.ResponseDto;
 import hanghackaton.horanedu.common.security.UserDetailsImpl;
+import hanghackaton.horanedu.domain.school.dto.SchoolRankResponseDto;
 import hanghackaton.horanedu.domain.school.dto.SchoolRequestDto;
 import hanghackaton.horanedu.domain.school.dto.SchoolResponseDto;
 import hanghackaton.horanedu.domain.school.service.SchoolService;
-import hanghackaton.horanedu.domain.school.dto.SchoolRankDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -32,5 +32,10 @@ public class SchoolController {
     @GetMapping()
     public ResponseDto<SchoolResponseDto> getSchool(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return schoolService.getSchool(userDetails.getUser());
+    }
+
+    @GetMapping("/rank")
+    public ResponseDto<SchoolRankResponseDto> getSchoolRank(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return schoolService.getSchoolRank(userDetails.getUser());
     }
 }

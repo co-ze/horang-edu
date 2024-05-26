@@ -7,6 +7,7 @@ import hanghackaton.horanedu.common.jwt.JwtUtil;
 import hanghackaton.horanedu.common.s3.S3Service;
 import hanghackaton.horanedu.domain.school.entity.School;
 import hanghackaton.horanedu.domain.school.repository.SchoolRepository;
+import hanghackaton.horanedu.domain.user.dto.UserRankDto;
 import hanghackaton.horanedu.domain.user.dto.authDto.LoginDto;
 import hanghackaton.horanedu.domain.user.dto.authDto.SignupDto;
 import hanghackaton.horanedu.domain.user.dto.authDto.TempSignupDto;
@@ -14,6 +15,7 @@ import hanghackaton.horanedu.domain.user.dto.requestDto.UserDepartmentDto;
 import hanghackaton.horanedu.domain.user.dto.requestDto.UserUpdateRequestDto;
 import hanghackaton.horanedu.domain.user.dto.responseDto.PatchUserResponseDto;
 import hanghackaton.horanedu.domain.user.dto.responseDto.TempSignupResponseDto;
+import hanghackaton.horanedu.domain.user.dto.responseDto.UserRankResponseDto;
 import hanghackaton.horanedu.domain.user.dto.responseDto.UserResponseDto;
 import hanghackaton.horanedu.domain.user.entity.User;
 import hanghackaton.horanedu.domain.user.entity.UserDetail;
@@ -35,6 +37,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
@@ -234,6 +237,11 @@ public class UserService {
 
         userDetail.setSchool(group);
         group.getUserDetailList().add(userDetail);
+
+        UserProgress userProgress = userProgressRepository.findUserProgressByUser(user);
+        if(userProgress != null) {
+            group.updateScore(userProgress.getExp());
+        }
         schoolRepository.saveAndFlush(group);
         userDetailRepository.save(userDetail);
 
@@ -289,6 +297,30 @@ public class UserService {
         log.info("-----임시 회원 생성 종료-----");
 
         return ResponseDto.setSuccess(HttpStatus.OK, "임시 계정 생성", responseDto);
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseDto<UserRankResponseDto> getUserRank(User loginUser) {
+
+        UserProgress userProgress;
+        int userRank;
+        UserRankResponseDto response;
+
+        if(loginUser.getRole().equals(UserRole.STUDENT)) {
+            userProgress = userProgressRepository.findUserProgressByUser(loginUser);
+            List<UserRankDto> ranking = userRepository.getUserRank();
+            userRank = userRepository.getLoginUserRank(ranking, userProgress.getId());
+            String loginUserName = userProgress.getUser().getName();
+            response = new UserRankResponseDto(loginUserName, userRank, userProgress.getExp(),ranking);
+
+            return ResponseDto.set(HttpStatus.OK, "개인 랭킹 조회(학생)", response);
+        }else{
+            List<UserRankDto> ranking = userRepository.getUserRank();
+            response = new UserRankResponseDto("", 0, 0, ranking);
+
+            return ResponseDto.set(HttpStatus.OK, "개인 랭킹 조회(선생)", response);
+        }
+
     }
 
 }

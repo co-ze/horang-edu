@@ -12,4 +12,6 @@ public interface SchoolRepository extends JpaRepository<School, Long>, SchoolInq
 
     School findSchoolByGroupCode(String groupCode);
     School findSchoolById(Long id);
+
+    Optional<School> searchSchoolById(Long id);
 }

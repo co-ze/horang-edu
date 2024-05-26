@@ -5,11 +5,15 @@ import lombok.Getter;
 
 @Getter
 public class SchoolRankDto {
-    private String name;
+    private Long id;
+    private String schoolName;
     private int rank;
+    private int exp;
 
-    public SchoolRankDto(School school) {
-        this.name = school.getName();
-        this.rank = school.getRanking();
+    public SchoolRankDto(School school, int rank) {
+        this.id = school.getId();
+        this.schoolName = school.getName();
+        this.rank = rank;
+        this.exp = school.getScore();
     }
 }

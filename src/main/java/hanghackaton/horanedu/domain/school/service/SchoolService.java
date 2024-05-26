@@ -3,9 +3,7 @@ package hanghackaton.horanedu.domain.school.service;
 import hanghackaton.horanedu.common.dto.ResponseDto;
 import hanghackaton.horanedu.common.exception.ExceptionEnum;
 import hanghackaton.horanedu.common.exception.GlobalException;
-import hanghackaton.horanedu.domain.school.dto.SchoolRequestDto;
-import hanghackaton.horanedu.domain.school.dto.SchoolResponseDto;
-import hanghackaton.horanedu.domain.school.dto.UserListDto;
+import hanghackaton.horanedu.domain.school.dto.*;
 import hanghackaton.horanedu.domain.school.entity.School;
 import hanghackaton.horanedu.domain.school.repository.SchoolRepository;
 import hanghackaton.horanedu.domain.user.entity.User;
@@ -22,6 +20,7 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -98,5 +97,23 @@ public class SchoolService {
         SchoolResponseDto response = new SchoolResponseDto(group, user.getName(), userListDto);
 
         return ResponseDto.set(HttpStatus.OK, "그룹 조회", response);
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseDto<SchoolRankResponseDto> getSchoolRank(User loginUser){
+        Optional<School> userGroup = schoolRepository.searchSchoolById(loginUser.getUserDetail().getSchool().getId());
+
+        if(userGroup.isPresent()) {
+            String groupName = userGroup.get().getName();
+            int groupScore = userGroup.get().getScore();
+            List<SchoolRankDto> ranking = schoolRepository.getSchoolRank();
+            int groupRank = schoolRepository.getLoginUserSchoolRank(ranking, userGroup.get().getId());
+            SchoolRankResponseDto response = new SchoolRankResponseDto(groupName, groupRank, groupScore, ranking);
+            return ResponseDto.set(HttpStatus.OK, "학교 랭킹 조회", response);
+        }else{
+            List<SchoolRankDto> ranking = schoolRepository.getSchoolRank();
+            SchoolRankResponseDto response = new SchoolRankResponseDto("", 0, 0, ranking);
+            return ResponseDto.set(HttpStatus.OK, "학교 랭킹 조회", response);
+        }
     }
 }

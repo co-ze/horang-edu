@@ -3,11 +3,13 @@ package hanghackaton.horanedu.domain.user.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import hanghackaton.horanedu.common.dto.ResponseDto;
 import hanghackaton.horanedu.common.security.UserDetailsImpl;
+import hanghackaton.horanedu.domain.user.dto.UserRankDto;
 import hanghackaton.horanedu.domain.user.dto.authDto.LoginDto;
 import hanghackaton.horanedu.domain.user.dto.authDto.SignupDto;
 import hanghackaton.horanedu.domain.user.dto.authDto.TempSignupDto;
 import hanghackaton.horanedu.domain.user.dto.requestDto.UserDepartmentDto;
 import hanghackaton.horanedu.domain.user.dto.responseDto.TempSignupResponseDto;
+import hanghackaton.horanedu.domain.user.dto.responseDto.UserRankResponseDto;
 import hanghackaton.horanedu.domain.user.dto.responseDto.UserResponseDto;
 import hanghackaton.horanedu.domain.user.dto.requestDto.UserUpdateRequestDto;
 import hanghackaton.horanedu.domain.user.dto.responseDto.PatchUserResponseDto;
@@ -74,11 +76,10 @@ public class UserController {
         return userService.createTempUser(tempSignupDto, userDetails.getUser());
     }
 
-    //    @GetMapping("/rank/{id}")
-//    public ResponseDto<OneUserDto> getUserRank(@PathVariable Long id) {
-//        return userService.getStudentRank(id);
-//    }
-//}
+        @GetMapping("/rank")
+    public ResponseDto<UserRankResponseDto> getUserRank(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.getUserRank(userDetails.getUser());
+    }
 }
 
 

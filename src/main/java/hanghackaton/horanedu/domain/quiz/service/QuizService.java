@@ -7,6 +7,8 @@ import hanghackaton.horanedu.domain.quiz.dto.QuizRequestDto;
 import hanghackaton.horanedu.domain.quiz.dto.QuizResponseDto;
 import hanghackaton.horanedu.domain.quiz.entity.Quiz;
 import hanghackaton.horanedu.domain.quiz.repository.QuizRepository;
+import hanghackaton.horanedu.domain.school.entity.School;
+import hanghackaton.horanedu.domain.school.repository.SchoolRepository;
 import hanghackaton.horanedu.domain.user.entity.User;
 import hanghackaton.horanedu.domain.user.entity.UserProgress;
 import hanghackaton.horanedu.domain.user.repository.UserRepository;
@@ -26,6 +28,7 @@ public class QuizService {
     private final QuizRepository quizRepository;
     private final UserRepository userRepository;
     private final UserProgressRepository userProgressRepository;
+    private final SchoolRepository schoolRepository;
 
     @Transactional
     public ResponseDto<QuizResponseDto> attemptQuiz(User loginUser, QuizRequestDto quizRequestDto) {
@@ -40,6 +43,8 @@ public class QuizService {
                 () -> new GlobalException(ExceptionEnum.NOT_FOUND_QUIZ)
         );
 
+
+
         if(Objects.equals(quiz.getAnswer(),quizRequestDto.getAnswer())){
             userProgress.setChapter(quiz.getChapter());
             userProgress.setStage(quiz.getStage());
@@ -47,6 +52,12 @@ public class QuizService {
             userProgress.setExp(quiz.getExp());
             userProgressRepository.saveAndFlush(userProgress);
             QuizResponseDto response = new QuizResponseDto(quiz);
+
+            if(user.getUserDetail().getSchool() != null){
+                School group = schoolRepository.findSchoolById(user.getUserDetail().getSchool().getId());
+                group.updateScore(quiz.getExp());
+                schoolRepository.saveAndFlush(group);
+            }
             return ResponseDto.set(HttpStatus.OK, "정답!", response);
         }else{
             QuizResponseDto response = new QuizResponseDto(quiz);
